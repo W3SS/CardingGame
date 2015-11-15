@@ -9,8 +9,12 @@ import java.sql.*;
  * @author victorfeijo
  *
  */
+
+
 public class CardShop {
 	
+	public static final String DC = "DC";
+	public static final String MARVEL = "Marvel";
 	private String dbPath;
 	private Connection connection;
 	private Statement statement;
@@ -53,31 +57,14 @@ public class CardShop {
 		}
 	}
 	
-	public void createMagicCard(String name, String mana, Effect effect) {
+	public Card getRandomCard(String type) {
 		
-		try {
-			
-			ResultSet result = this.statement.executeQuery( "SELECT * FROM MAGICCARD;" );
-			int id = 999;
-			while (result.next()) {
-				id = result.getInt("id") + 1;
-			}
-			String insert = "INSERT INTO MAGICCARD (ID, NAME, MANA, ATACKBUFF, DEFENSEBUFF, MANABUFF) " +
-			"VALUES (" + id + ", '" + name + "', " + mana + ", " + effect.getBuffAttack() + ", " + effect.getBuffDefense() +
-			", " + effect.getBuffMana() + " );";
-			
-			System.out.println(insert);
-			
-			this.statement.executeUpdate(insert);
-			this.statement.close();
-			this.connection.commit();
-			this.connection.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//TODO
+		if (type == CardShop.DC) return new Card("Dc", 0, 0);
+		if (type == CardShop.MARVEL) return new Card("Marvel", 0, 0);
+		
+		return null;
+		
 	}
-	
-	
 
 }

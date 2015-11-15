@@ -35,7 +35,6 @@ public class teste {
 		*/
 		
 		cardShop.connectDatabase();
-		cardShop.createMagicCard("Axe2", "3", new Effect(4, 1, 0));
 		
 		
 

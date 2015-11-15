@@ -3,22 +3,73 @@
  */
 package Model;
 
-import Exception.EffectFailEx;
-
 /**
  * @author victorfeijo
  *
  */
-public interface Card {
+public class Card {
 	
-	public String getName();
-	public int getAttack();
-	public int getDefense();
-	public int getManaToUse();
-	public void setAttack(int attack);
-	public void setDefense(int defense);
-	public void setManaToUse(int mana);
-	public Effect getEffect();
-	public void makeEffectHappens(Effect effect) throws EffectFailEx;
+	private String name;
+	private int attack;
+	private int defense;
+	
+	/** Create the card and a fake effect with 0/0 buff.
+	 * 
+	 * @param The name of the card
+	 * @param The attack in number
+	 * @param The defense in number
+	 */
+	public Card(String name, int attack, int defense) {
+		
+		this.name = name;
+		this.attack = attack;
+		this.defense = defense;
+		
+	}
+
+	/** 
+	 * @return Name of the card.
+	 */
+	public String getName() {
+		
+		return this.name;
+		
+	}
+
+	/** 
+	 * @return Number of attack from the card.
+	 */
+	public int getAttack() {
+
+		return this.attack;
+		
+	}
+
+	/**
+	 * @return Number of defense from the card.
+	 */
+	public int getDefense() {
+
+		return this.defense;
+		
+	}
+	
+	/** 
+	 * @param a new attack for the card.
+	 */
+	public void setAttack(int attack) {
+		
+		this.attack = attack;
+		
+	}
+	 
+	 /**
+	 * @param a new defense for the card.
+	 */
+	public void setDefense(int defense) {
+		
+		this.defense = defense;
+		
+	}
 
 }
