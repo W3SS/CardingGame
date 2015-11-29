@@ -19,11 +19,12 @@ public class Player {
 	private int status;
 	private boolean isTurn;
 	
-	public Player(String name, DeckEnum deckType) {
+	public Player(String name, DeckEnum deckType, List<Card> deck) {
 		
 		this.name = name;
 		this.points = STARTPOINTS;
 		this.deckType = deckType;
+		this.deck = deck;
 		this.handCards = new ArrayList<Card>();
 	}
 	

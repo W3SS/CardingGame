@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 /**
  * @author victorfeijo
@@ -29,7 +28,7 @@ public class Field {
 	// Battle history from this game 
 	private List<Battle> battles;
 	
-	Field(Player player1, Player player2) {
+	public Field(Player player1, Player player2) {
 		this.player1 = player1;
 		this.player2 = player2;
 	}
@@ -117,18 +116,16 @@ public class Field {
 				return !this.cardsOn1.containsKey(fieldPos[1]);
 			
 		else  // if (fieldPos[0] == 2)
-			return !this.cardsOn1.containsKey(fieldPos[1]);
+			return false;
 	}	
 	
 	public void addCard(Card card, int[] fieldPos) throws InvalidPositionException {
-		if (!this.validAddPosition(fieldPos))
+		
+		if (!this.validAddPosition(fieldPos)) {
 			throw new InvalidPositionException("Attempt to add card in an invalid position");
+		}
 		
-		if (fieldPos[0] == 1)
-			this.cardsOn1.put(fieldPos[1], card);
-		
-		else if (fieldPos[0] == 2)
-			this.cardsOn2.put(fieldPos[1], card);
+		this.cardsOn1.put(fieldPos[1], card);
 		
 	}
 	
@@ -141,6 +138,10 @@ public class Field {
 		Game.updatePoints();
 		Game.updateField();
 		
+	}
+	
+	public List<Card> getPlayer1Hand() {
+		return this.player1.getHandCards();
 	}
 	
 	

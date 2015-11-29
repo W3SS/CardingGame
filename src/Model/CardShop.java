@@ -39,19 +39,6 @@ public class CardShop {
 		
 	}
 	
-	public void createTable(String table) {
-		
-		try {
-			this.statement.executeUpdate(table);
-			this.statement.close();
-			this.connection.commit();
-			this.connection.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public Card getRandomCard(DeckEnum type) {
 		
 		//TODO
