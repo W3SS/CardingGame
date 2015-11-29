@@ -1,7 +1,7 @@
 package Model;
 
 
-import java.sql.*;
+import java.util.List;
 
 
 public class teste {
@@ -14,28 +14,12 @@ public class teste {
 		
 		
 		CardShop cardShop = new CardShop();
+		//cardShop.connectDatabase("./database/cards.db");
 		
-		/* CONECTA, PRIMEIRA TABELA , FECHA BD
-		cardShop.connectDatabase();
-		cardShop.createTable("CREATE TABLE NORMALCARD " +
-                			"(ID INT PRIMARY KEY     NOT NULL," +
-                			" NAME           TEXT    NOT NULL, " + 
-                			" ATACK          INT     NOT NULL, " +
-                			" DEFENSE        INT     NOT NULL, " + 
-                			" MANA           INT     NOT NULL)"  );
-		//CONECTA, SEGUNDA TABELA, FECHA BD
-		cardShop.connectDatabase();
-		cardShop.createTable("CREATE TABLE MAGICCARD " +
-                			"(ID INT PRIMARY KEY     NOT NULL," +
-                			" NAME           TEXT    NOT NULL, " +
-                			" MANA           INT     NOT NULL, " +
-                			" ATACKBUFF      INT     NOT NULL, " +
-                			" DEFENSEBUFF    INT     NOT NULL, " + 
-                			" MANABUFF       INT     NOT NULL)"  );
-		*/
-		
-		cardShop.connectDatabase("./database/cards.db");
-		
+		List<Card> deck = cardShop.getDeck(DeckEnum.MARVEL);
+		for (Card card : deck) {
+			System.out.println(card.getName());
+		}
 		
 
 	}

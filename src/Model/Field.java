@@ -144,8 +144,15 @@ public class Field {
 		return this.player1.getHandCards();
 	}
 	
+	public Player getPlayer1() {
+		return this.player1;
+	}
 	
-	
-	
+	public Card getCardOnPosition(int position[]) {
+		if (position[0] == 1) {
+			return cardsOn1.get(position[1]);
+		}
+		return cardsOn2.get(position[1]);
+	}
 
 }
