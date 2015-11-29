@@ -60,7 +60,7 @@ public class test1 extends JFrame {
 		
 		JButton btnA = new JButton("2 1");
 		btnA.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) { 
 			}
 		});
 		panel.add(btnA);
