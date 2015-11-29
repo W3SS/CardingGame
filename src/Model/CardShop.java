@@ -4,6 +4,7 @@
 package Model;
 
 import java.sql.*;
+import java.util.List;
 
 /**
  * @author victorfeijo
@@ -39,13 +40,10 @@ public class CardShop {
 		
 	}
 	
-	public Card getRandomCard(DeckEnum type) {
+	public List<Card> getDeck(DeckEnum type) {
 		
 		//TODO
-		if (type == DeckEnum.DC) return new Card("DCCARD", 0, 0, 0, DeckEnum.DC);
-		if (type == DeckEnum.MARVEL) return new Card("MARVELCARD", 0, 0, 0, DeckEnum.MARVEL);
 		
-		return null;
 		
 	}
 
