@@ -63,12 +63,16 @@ public class Player {
 	}
 	
 	public void addHandCard(Card card) throws FullHandException {
-		if (this.handCards.size() > 5) {
+		if (this.handCards.size() > 4) {
 			throw new FullHandException("A mão está cheia para comprar uma nova carta!");
 		}
 		else {
 			this.handCards.add(card);
 		}
+	}
+	
+	public void removeFromDeck(Card card) {
+		this.deck.remove(card);
 	}
 	
 	public DeckEnum getDeckType() {
