@@ -96,8 +96,31 @@ public class Game {
 				enemyPos = MainWindow.getSelectedFieldPos();
 			}
 			Battle battle = new Battle(this.field.getCardOnPosition(selectedPos), this.field.getCardOnPosition(enemyPos));
+			Card loserCard = battle.getLoser();
+			this.field.removeCard(loserCard);
+			Player loser = this.getCardOwner(loserCard);
+			int damage = battle.getDamage();
+			loser.applyDamage(damage);
+			if (damage == 0) {
+				Card winnerCard = battle.getWinner();
+				this.field.removeCard(winnerCard);
+			}
+			this.field.addBattle(battle);
+			Main
 		}
 		
+	}
+	
+	public Player getCardOwner(Card card) {
+		
+		Player player1 = this.field.getPlayer1();
+		Player loser;
+		if (card.getDeckType() == player1.getDeckType()) {
+			loser = player1;
+		} else {
+			loser = this.field.getPlayer2();
+		}
+		return loser;
 	}
 	
 }

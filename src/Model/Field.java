@@ -155,4 +155,12 @@ public class Field {
 		return cardsOn2.get(position[1]);
 	}
 
+	public Player getPlayer2() {
+		return this.player2;
+	}
+
+	public void addBattle(Battle battle) {
+		this.battles.add(battle);
+	}
+
 }

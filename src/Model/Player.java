@@ -70,6 +70,10 @@ public class Player {
 			this.handCards.add(card);
 		}
 	}
+	
+	public DeckEnum getDeckType() {
+		return this.deckType;
+	}
 
 	
 }
