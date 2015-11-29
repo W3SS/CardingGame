@@ -46,7 +46,7 @@ public class test1 extends JFrame {
 	 */
 	public test1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 700);
+		setBounds(100, 100, 890, 700);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -66,7 +66,7 @@ public class test1 extends JFrame {
 		panel.add(btnA);
 		
 		ImageIcon imgH1;  
-		imgH1 = new ImageIcon("/home/matteus/batata.jpg");  
+		imgH1 = new ImageIcon("/home/matteus/red.png");  
 		
 		JButton btnB = new JButton("2 2");
 		panel.add(btnB);
