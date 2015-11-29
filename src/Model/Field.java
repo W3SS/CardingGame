@@ -3,7 +3,12 @@
  */
 package Model;
 
+import Exception.InvalidPositionException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 /**
  * @author victorfeijo
@@ -11,9 +16,135 @@ import java.util.Map;
  */
 public class Field {
 	
+	private static final int FIELDWIDTH = 5;
+	
+	// Player on this game:
 	private Player player1;
+	// Enemy:
 	private Player player2;
-	private Map<Integer, Card> positions;
+	// Cards on the field of player1:
+	private Map<Integer, Card> cardsOn1;
+	// Cards on the field of player1:
+	private Map<Integer, Card> cardsOn2;
+	// Battle history from this game 
+	private List<Battle> battles;
+	
+	Field(Player player1, Player player2) {
+		this.player1 = player1;
+		this.player2 = player2;
+	}
+
+	public Map<Integer, Card> getCardsOn1() {
+		return this.cardsOn1;
+	}
+
+	public void setCardsOn1(Map<Integer, Card> cardsOn1) {
+		this.cardsOn1 = cardsOn1;
+	}
+
+	public Map<Integer, Card> getCardsOn2() {
+		return this.cardsOn2;
+	}
+
+	public void setCardsOn2(Map<Integer, Card> cardsOn2) {
+		this.cardsOn2 = cardsOn2;
+	}
+
+	public List<Battle> getBattles() {
+		return this.battles;
+	}
+	
+	public int[] getPoints() {
+		int[] points = new int[2];
+		points[0] = this.player1.getPoints();
+		points[1] = this.player2.getPoints();
+		return points;
+	}
+	
+	public void setPoints(int[] points) {
+		this.player1.setPoints(points[0]);
+		this.player2.setPoints(points[1]);
+	}
+	
+	public boolean isEnemyCardsEmpty() {
+		return this.cardsOn2.isEmpty();
+	}
+	
+	public void removeCard(Card card) {
+		removeCardFromCollection(card, this.cardsOn1);
+		removeCardFromCollection(card, this.cardsOn2);
+	}
+	
+	private void removeCardFromCollection(Card card, Map<Integer, Card> collection) {
+		for (Map.Entry<Integer, Card> actualEntry : collection.entrySet()) {
+			if (card.getId() == actualEntry.getKey()) {
+				collection.remove(actualEntry.getKey());
+			}
+		}
+	}
+	
+	// check if the field exists
+	public boolean validPosition(int[] fieldPos) {
+		// X=fieldPos[0] represents cardsOnX
+		// fieldPos[1] represents the key (position) inside cardsOnX
+
+		// fieldPos must have length 2:
+		if (fieldPos.length != 2)
+			return false;
+		
+		// fieldPos[0] must be 1 or 2:
+		else if (fieldPos[0] != 1 && fieldPos[0] != 2)
+			return false;
+		
+		// checks if the field exists:
+		else if (fieldPos[1] < 0 && fieldPos[1] >= FIELDWIDTH)
+			return false;
+		
+		// position is valid:
+		else
+			return true;
+		
+	}
+	
+	public boolean validAddPosition(int[] fieldPos) {
+		
+		if (!this.validPosition(fieldPos)) {
+			return false;
+		}
+		
+		// if the position has a card, it is not valid to add:
+		else if (fieldPos[0] == 1)
+				return !this.cardsOn1.containsKey(fieldPos[1]);
+			
+		else  // if (fieldPos[0] == 2)
+			return !this.cardsOn1.containsKey(fieldPos[1]);
+	}	
+	
+	public void addCard(Card card, int[] fieldPos) throws InvalidPositionException {
+		if (!this.validAddPosition(fieldPos))
+			throw new InvalidPositionException("Attempt to add card in an invalid position");
+		
+		if (fieldPos[0] == 1)
+			this.cardsOn1.put(fieldPos[1], card);
+		
+		else if (fieldPos[0] == 2)
+			this.cardsOn2.put(fieldPos[1], card);
+		
+	}
+	
+	public void parseMove(Move move) {
+		this.setPoints(move.getPoints());
+		this.setCardsOn1(move.getCardsOn1());
+		this.setCardsOn2(move.getCardsOn2());
+		this.setBattles(move.getBattles());
+		
+		Game.updatePoints();
+		Game.updateField();
+		
+	}
+	
+	
+	
 	
 
 }

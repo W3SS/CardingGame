@@ -1,59 +1,58 @@
-/**
- * 
- */
 package Model;
 
-/**
- * @author victorfeijo
- *
- */
+import java.lang.Math;
 
 public class Battle {
 	
-	private Card card1;
-	private Card card2;
-	private Card winner;
-	private Card loser;
+	protected Card winner;
+	protected Card loser;
+	protected String report;
+	protected int damage;
+	
 	
 	public Battle(Card card1, Card card2) {
 		
-		this.card1 = card1;
-		this.card2 = card2;
-		this.startBattle();
-		
-	}
-	
-	public void startBattle() {
-		
 		if (card1.getAttack() > card2.getDefense()) {
-			
-			winner = card1;
-			loser = card2;
-			
-		}
-		else if (card1.getAttack() < card2.getDefense()) {
-			
-			winner = card2;
-			loser = card1;
-			
+		
+			this.winner = card1;
+			this.loser = card2;
+		
 		} else {
-			
-			winner = null;
-			loser = null;
+
+			this.winner = card2;
+			this.loser = card1;
 			
 		}
+		
+		this.damage = Math.abs(card1.getAttack() - card2.getDefense());
+		
+		this.report = "Winner: " + this.winner.getName() + 
+				"\nLoser: " + this.loser.getName() + 
+				"\nDamage: " + this.damage;
 		
 	}
 	
 	public Card getWinner() {
 		
-		return winner;
+		return this.winner;
 		
 	}
 	
 	public Card getLoser() {
 		
-		return loser;
+		return this.loser;
+		
+	}
+
+	public String getReport() {
+		
+		return this.report;
+		
+	}
+	
+	public int getDamage() {
+		
+		return this.damage;
 		
 	}
 

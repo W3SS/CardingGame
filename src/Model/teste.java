@@ -13,7 +13,7 @@ public class teste {
 	*/
 		
 		
-		CardShop cardShop = new CardShop("./database/cards.db");
+		CardShop cardShop = new CardShop();
 		
 		/* CONECTA, PRIMEIRA TABELA , FECHA BD
 		cardShop.connectDatabase();
@@ -34,7 +34,7 @@ public class teste {
                 			" MANABUFF       INT     NOT NULL)"  );
 		*/
 		
-		cardShop.connectDatabase();
+		cardShop.connectDatabase("./database/cards.db");
 		
 		
 

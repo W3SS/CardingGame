@@ -8,16 +8,22 @@ import Exception.FullHandException;
 
 public class Player {
 	
+	private static final int STARTPOINTS = 30;
+	
 	private String name;
-	private int lifePoints;
+	private int points;
+	private CardShop shop;
 	private List<Card> deck;
 	private List<Card> handCards;
+	private DeckEnum deckType;
+	private int status;
+	private boolean isTurn;
 	
-	public Player(String name, int lifePoints, List<Card> deck) {
+	public Player(String name, DeckEnum deckType) {
 		
 		this.name = name;
-		this.lifePoints = lifePoints;
-		this.deck = deck;
+		this.points = STARTPOINTS;
+		this.deckType = deckType;
 		this.handCards = new ArrayList<Card>();
 	}
 	
@@ -25,21 +31,26 @@ public class Player {
 		return this.name;
 	}
 	
-	public int getLifePoints() {
-		return this.lifePoints;
-	}
-	
-	public List<Card> getDeck() {
-		return this.deck;
+	public int getPoints() {
+		return this.points;
 	}
 	
 	public List<Card> getHandCards() {
 		return this.handCards;
 	}
 	
-	public void setLifePoints(int lifePoints) {
-		this.lifePoints = lifePoints;
+	public void setPoints(int points) {
+		this.points = points;
 	}
+	
+	public void applyDamage(int damage) {
+		this.points -= damage;
+	}
+	
+	public void removeFromHand(Card card) {
+		this.handCards.remove(card);
+	}
+
 	
 	public Card popDeck() throws EmptyDeckException {
 		if (this.deck.isEmpty()) {
@@ -59,4 +70,5 @@ public class Player {
 		}
 	}
 
+	
 }

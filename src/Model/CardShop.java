@@ -13,19 +13,14 @@ import java.sql.*;
 
 public class CardShop {
 	
-	public static final String DC = "DC";
-	public static final String MARVEL = "Marvel";
-	private String dbPath;
+//	public static final String DC = "DC";
+//	public static final String MARVEL = "Marvel";
+//	private String dbPath;
 	private Connection connection;
 	private Statement statement;
 	
-	public CardShop(String dbPath) {
-		
-		this.dbPath = dbPath;
-		
-	}
 	
-	public void connectDatabase() {
+	public void connectDatabase(String dbPath) {
 		
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -57,11 +52,11 @@ public class CardShop {
 		}
 	}
 	
-	public Card getRandomCard(String type) {
+	public Card getRandomCard(DeckEnum type) {
 		
 		//TODO
-		if (type == CardShop.DC) return new Card("Dc", 0, 0);
-		if (type == CardShop.MARVEL) return new Card("Marvel", 0, 0);
+		if (type == DeckEnum.DC) return new Card("DCCARD", 0, 0, 0, DeckEnum.DC);
+		if (type == DeckEnum.MARVEL) return new Card("MARVELCARD", 0, 0, 0, DeckEnum.MARVEL);
 		
 		return null;
 		
