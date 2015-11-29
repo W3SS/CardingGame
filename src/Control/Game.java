@@ -106,7 +106,7 @@ public class Game {
 				this.field.removeCard(winnerCard);
 			}
 			this.field.addBattle(battle);
-			Main
+			MainWindow.showNewField(this.field);
 		}
 		
 	}
