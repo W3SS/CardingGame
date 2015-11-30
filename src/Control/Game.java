@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import Exception.EmptyDeckException;
 import Exception.FullHandException;
 import Exception.InvalidPositionException;
 import Model.*;
@@ -20,10 +21,15 @@ public class Game {
 	
 	public Game(String server) {
 		
+		this.mainWindow = new MainWindow(this);
 		this.startGame(server);
 		
 	}
 	
+	public static void main(String[] args) {
+		Game game = new Game(null);
+		game.startGame(null);
+	}
 	
 	
 	
@@ -34,7 +40,7 @@ public class Game {
 		 * 
 		 * 
 		 */
-		DeckEnum type = MainWindow.getChoosenDeck();
+		DeckEnum type = mainWindow.getChoosenDeck();
 		CardShop cardShop = new CardShop();
 		List<Card> deck = cardShop.getDeck(type);
 		
@@ -43,15 +49,20 @@ public class Game {
 		this.field = new Field(player1, player2);
 		Random generator = new Random();
 		for (int i=0; i<5; i++) {
-			int indexRand = generator.nextInt(20);
+			int indexRand = generator.nextInt(deck.size());
 			try {
 				player1.addHandCard(deck.get(indexRand));
+				System.out.println(deck.get(indexRand).getId());
+				player1.removeFromDeck(deck.get(indexRand));
 			} catch (FullHandException e) {
 				//fazer um joptionpane para avisar mão cheia
 				e.printStackTrace();
 			}
 		}
-		MainWindow.showNewField(this.field);
+		mainWindow.setVisible(true);
+		
+		mainWindow.showNewField(this.field);
+		mainWindow.getSelectedHandPosition();
 	}
 
 
@@ -60,7 +71,8 @@ public class Game {
 		List<Card> player1Hand = this.field.getPlayer1Hand();
 		if (position[0] == 0) {
 			Card selectedCard = player1Hand.get(position[1]);
-			int fieldPos[] = MainWindow.getSelectedFieldPos();
+			System.out.println(selectedCard.getName());
+			int fieldPos[] = {1, 0};
 			if (this.field.validAddPosition(fieldPos)) {
 				try {
 					this.field.addCard(selectedCard, fieldPos);
@@ -72,8 +84,8 @@ public class Game {
 			}
 			
 		}
-		MainWindow.showNewField(this.field);
-		this.attackOpponent();
+		mainWindow.showNewField(this.field);
+		//this.attackOpponent();
 	}
 
 
@@ -82,18 +94,23 @@ public class Game {
 	public void attackOpponent() {
 		
 		while (!this.field.isEnemyCardsEmpty()) {
-			if (MainWindow.getLastClick()[0] == 3 && MainWindow.getLastClick()[1] == 1) {
-				break;
-			}
-			int selectedPos[] = MainWindow.getSelectedFieldPos();
+			int selectedPos[] = mainWindow.getSelectedFieldPos();
 			while (selectedPos[0] != 1) {
+				//verifica se clicou em encerrar partida
+				if (mainWindow.getLastClick()[0] == 3 && mainWindow.getLastClick()[1] == 1) {
+					this.endTurn();
+				}
 				//avisa posição errada
-				selectedPos = MainWindow.getSelectedFieldPos();
+				selectedPos = mainWindow.getSelectedFieldPos();
 			}
-			int enemyPos[] = MainWindow.getSelectedFieldPos();
+			int enemyPos[] = mainWindow.getSelectedFieldPos();
 			while (enemyPos[0] != 2) {
+				//verifica se clicou em encerrar partida
+				if (mainWindow.getLastClick()[0] == 3 && mainWindow.getLastClick()[1] == 1) {
+					this.endTurn();
+				}
 				//avisa posiçao enemigo errada
-				enemyPos = MainWindow.getSelectedFieldPos();
+				enemyPos = mainWindow.getSelectedFieldPos();
 			}
 			Battle battle = new Battle(this.field.getCardOnPosition(selectedPos), this.field.getCardOnPosition(enemyPos));
 			Card loserCard = battle.getLoser();
@@ -106,11 +123,21 @@ public class Game {
 				this.field.removeCard(winnerCard);
 			}
 			this.field.addBattle(battle);
-			MainWindow.showNewField(this.field);
+			mainWindow.showNewField(this.field);
 		}
+		this.endTurn();
 		
 	}
 	
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void receiveMove() {
+
+	}
+
 	public Player getCardOwner(Card card) {
 		
 		Player player1 = this.field.getPlayer1();

@@ -4,6 +4,9 @@
 package Model;
 
 import Exception.InvalidPositionException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +34,9 @@ public class Field {
 	public Field(Player player1, Player player2) {
 		this.player1 = player1;
 		this.player2 = player2;
+		this.cardsOn1 = new HashMap<Integer, Card>();
+		this.cardsOn2 = new HashMap<Integer, Card>();
+		this.battles = new ArrayList<Battle>();
 	}
 
 	public Map<Integer, Card> getCardsOn1() {
@@ -133,10 +139,10 @@ public class Field {
 		this.setPoints(move.getPoints());
 		this.setCardsOn1(move.getCardsOn1());
 		this.setCardsOn2(move.getCardsOn2());
-		this.setBattles(move.getBattles());
+		//this.setBattles(move.getBattles());
 		
-		Game.updatePoints();
-		Game.updateField();
+		//Game.updatePoints();
+		//Game.updateField();
 		
 	}
 	

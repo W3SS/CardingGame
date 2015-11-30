@@ -10,6 +10,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Control.Game;
+
 import java.awt.Color;
 import java.awt.GridLayout;
 
@@ -29,35 +32,42 @@ import javax.swing.JTextPane;
 
 public class MainWindow extends JFrame {
 
-	private JPanel contentPane;
-	private final JButton btnNewButton = new JButton("ENC TURNO");
 	private String[] Hid = new String[5];
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
+	private JPanel contentPane, panel_1, panel, panel_2;
+	private JButton btnA, btnB, btnC, btnD, btnE, button, button_1, button_2, button_3, button_4, 
+			btnH, btnH_1, btnH_2, btnH_3, btnH_4, btnEncerrarPartida, btnNewButton;
+	private JLabel lblVocPontos, lblPontos , label, lblInimigoPontos, lblPontos_1, label_1, lblVezPlayer,
+			lblNewLabel;
+	private JTextPane txtpnOQueFazer;
+	int[] lastClickPos;
+	private Game game;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow frame = new MainWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					MainWindow frame = new MainWindow();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
+
 
 	/**
 	 * Create the frame.
 	 */
-	public MainWindow() {
+	public MainWindow(Game game) {
+		this.game = game;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 880, 690);
+		setBounds(100, 100, 890, 680);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -68,128 +78,166 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void redraw() {
-		JPanel panel = new JPanel();
+		if (panel != null) {
+			contentPane.remove(panel);
+		}
+		panel = new JPanel();
 		panel.setBackground(Color.BLACK);
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new GridLayout(3, 5, 0, 0));
 		
-		JButton btnA = new JButton("2 1");
+		ImageIcon imgH1;
+		imgH1 = new ImageIcon("database/img/" + Hid[0] + ".png");
+		
+		ImageIcon imgH2;
+		imgH2 = new ImageIcon("database/img/" + Hid[1] + ".png");
+		
+		ImageIcon imgH3;
+		imgH3 = new ImageIcon("database/img/" + Hid[2] + ".png");
+		
+		ImageIcon imgH4;  
+		imgH4 = new ImageIcon("database/img/" + Hid[3] + ".png");
+		
+		ImageIcon imgH5;
+		imgH5 = new ImageIcon("database/img/" + Hid[4] + ".png");
+		
+		ImageIcon imgC11;
+		imgC11 = new ImageIcon("database/img/" + C1id[0] + ".png");
+		
+		ImageIcon imgC12;
+		imgC12 = new ImageIcon("database/img/" + C1id[1] + ".png");
+		
+		ImageIcon imgC13;
+		imgC13 = new ImageIcon("database/img/" + C1id[2] + ".png");
+		
+		ImageIcon imgC14;  
+		imgC14 = new ImageIcon("database/img/" + C1id[3] + ".png");
+		
+		ImageIcon imgC15;
+		imgC15 = new ImageIcon("database/img/" + C1id[4] + ".png");
+		
+		ImageIcon imgC21;
+		imgC21 = new ImageIcon("database/img/" + C2id[0] + ".png");
+		
+		ImageIcon imgC22;
+		imgC22 = new ImageIcon("database/img/" + C2id[1] + ".png");
+		
+		ImageIcon imgC23;
+		imgC23 = new ImageIcon("database/img/" + C2id[2] + ".png");
+		
+		ImageIcon imgC24;  
+		imgC24 = new ImageIcon("database/img/" + C2id[3] + ".png");
+		
+		ImageIcon imgC25;
+		imgC25 = new ImageIcon("database/img/" + C2id[4] + ".png");
+		
+		btnA = new JButton(imgC21);
 		btnA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
 		panel.add(btnA);
 		
-		ImageIcon imgH1;
-		//Hid[0] = "20";
-		imgH1 = new ImageIcon("database/img/" + Hid[0] + ".png");
-		ImageIcon imgH2;
-		//Hid[1] = "31";
-		imgH2 = new ImageIcon("database/img/" + Hid[1] + ".png");
-		ImageIcon imgH3;
-		//Hid[2] = "32";
-		imgH3 = new ImageIcon("database/img/" + Hid[2] + ".png");
-		ImageIcon imgH4;  
-		//Hid[3] = "33";
-		imgH4 = new ImageIcon("database/img/" + Hid[3] + ".png");
-		ImageIcon imgH5;
-		//Hid[4] = "34";
-		imgH5 = new ImageIcon("database/img/" + Hid[4] + ".png");
-		
-		JButton btnB = new JButton("2 2");
+		btnB = new JButton(imgC22);
 		panel.add(btnB);
 		
-		JButton btnC = new JButton("2 3");
+		btnC = new JButton(imgC23);
 		panel.add(btnC);
 		
-		JButton btnD = new JButton("2 4");
+		btnD = new JButton(imgC24);
 		panel.add(btnD);
 		
-		JButton btnE = new JButton("2 5");
+		btnE = new JButton(imgC25);
 		panel.add(btnE);
 		
-		JButton button = new JButton("1 1");
+		button = new JButton(imgC11);
 		panel.add(button);
 		
-		JButton button_1 = new JButton("1 2");
+		button_1 = new JButton(imgC12);
 		panel.add(button_1);
 		
-		JButton button_2 = new JButton("1 3");
+		button_2 = new JButton(imgC13);
 		panel.add(button_2);
 		
-		JButton button_3 = new JButton("1 4");
+		button_3 = new JButton(imgC14);
 		panel.add(button_3);
 		
-		JButton button_4 = new JButton("1 5");
+		button_4 = new JButton(imgC15);
 		panel.add(button_4);
 		
-		JButton btnH = new JButton(imgH1);
+		btnH = new JButton(imgH1);
 		panel.add(btnH);
 		
-		JButton btnH_1 = new JButton(imgH2);
+		btnH_1 = new JButton(imgH2);
 		panel.add(btnH_1);
 		
-		JButton btnH_2 = new JButton(imgH3);
+		btnH_2 = new JButton(imgH3);
 		panel.add(btnH_2);
 		
-		JButton btnH_3 = new JButton(imgH4);
+		btnH_3 = new JButton(imgH4);
 		panel.add(btnH_3);
 		
-		JButton btnH_4 = new JButton(imgH5);
+		btnH_4 = new JButton(imgH5);
 		panel.add(btnH_4);
 		
-		JPanel panel_1 = new JPanel();
+		if (panel_1 != null) {
+			contentPane.remove(panel_1);
+		}
+		panel_1 = new JPanel();
 		panel_1.setBackground(Color.LIGHT_GRAY);
 		contentPane.add(panel_1, BorderLayout.NORTH);
 		
-		JLabel lblVocPontos = new JLabel("Você: ");
+		lblVocPontos = new JLabel("Você: ");
 		panel_1.add(lblVocPontos);
 		
-		JLabel lblPontos = new JLabel("PONTOSVC");
+		lblPontos = new JLabel("PONTOSVC");
 		panel_1.add(lblPontos);
 		
-		JLabel label = new JLabel("      ");
+		label = new JLabel("      ");
 		panel_1.add(label);
 		
-		JLabel lblInimigoPontos = new JLabel("Inimigo: ");
+		lblInimigoPontos = new JLabel("Inimigo: ");
 		panel_1.add(lblInimigoPontos);
 		
-		JLabel lblPontos_1 = new JLabel("PONTOSINIMIGO");
+		lblPontos_1 = new JLabel("PONTOSINIMIGO");
 		panel_1.add(lblPontos_1);
 		
-		JLabel label_1 = new JLabel("                                        ");
+		label_1 = new JLabel("                                        ");
 		panel_1.add(label_1);
 		
-		JLabel lblVezPlayer = new JLabel("Vez: ");
+		lblVezPlayer = new JLabel("Vez: ");
 		panel_1.add(lblVezPlayer);
 		
-		JLabel lblNewLabel = new JLabel("PLAYER");
+		lblNewLabel = new JLabel("PLAYER");
 		panel_1.add(lblNewLabel);
 		
-		JPanel panel_2 = new JPanel();
+		if (panel_2 != null) {
+			contentPane.remove(panel_2);
+		}
+		panel_2 = new JPanel();
 		panel_2.setBackground(Color.BLACK);
 		contentPane.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new GridLayout(3, 1, 0, 0));
 		
-		JTextPane txtpnOQueFazer = new JTextPane();
+		txtpnOQueFazer = new JTextPane();
 		txtpnOQueFazer.setBackground(Color.LIGHT_GRAY);
 		txtpnOQueFazer.setText("O QUE FAZER\n TESTE");
 		txtpnOQueFazer.setEditable(false);
 		panel_2.add(txtpnOQueFazer);
+		btnNewButton = new JButton("ENC TURNO");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
 		panel_2.add(btnNewButton);
 		
-		JButton btnEncerrarPartida = new JButton("ENC PART");
+		btnEncerrarPartida = new JButton("ENC PART");
 		panel_2.add(btnEncerrarPartida);
 	}
 	
 	
 	public DeckEnum getChoosenDeck() {
-		// TODO Auto-generated method stub
-		return DeckEnum.DC;
+		return DeckEnum.MARVEL;
 	}
 
 	public void showNewField(Field field) {
@@ -199,13 +247,21 @@ public class MainWindow extends JFrame {
 		
 		
 		for (int k = 0; k < 5; k++) {
+			if (k >= handCards.size()) {
+				this.Hid[k] = "NULL";
+				continue;
+			}
 			Card card = handCards.get(k);
 			if (card != null) {
 				this.Hid[k] = card.getId() + "";
+				System.out.println(card.getId());
 			} else {
 				this.Hid[k] = "NULL";
+				System.out.println("NULLLL");
 			}
 		}
+		
+		System.out.println("BLABLABLA");
 		
 		for (int k = 0; k < 5; k++) {
 			if (cardsOn1.containsKey(k)) {
@@ -215,25 +271,52 @@ public class MainWindow extends JFrame {
 			}
 		}	
 		
+		System.out.println("BLABLABLA2");
+		
 		for (int k = 0; k < 5; k++) {
 			if (cardsOn2.containsKey(k)) {
 				this.C2id[k] = cardsOn2.get(k).getId() + "";
 			} else {
 				this.C2id[k] = "NULL";
 			}
-		}	
+		}
+		System.out.println("BLABLABLA3");
+		this.redraw();
+		System.out.println("BLABLABLA4");
 		
 		
 	}
 
-	public static int[] getSelectedFieldPos() {
-		// TODO Auto-generated method stub
+	public int[] getSelectedFieldPos() {
+		
+//		btnH.addActionListener(new ActionListener() {
+//			
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				
+//			}
+//		});
 		return null;
 	}
 
-	public static int[] getLastClick() {
+	public int[] getLastClick() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void getSelectedHandPosition() {
+
+		btnH.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lastClickPos = new int[2];
+				lastClickPos[0] = 0;
+				lastClickPos[1] = 0;
+				game.selectHand(lastClickPos);
+			}
+		});
+		
 	}
 
 
