@@ -60,7 +60,6 @@ public class Game {
 			}
 		}
 		mainWindow.setVisible(true);
-		
 		mainWindow.showNewField(this.field);
 		mainWindow.getSelectedHandPosition();
 	}
@@ -71,7 +70,6 @@ public class Game {
 		List<Card> player1Hand = this.field.getPlayer1Hand();
 		if (position[0] == 0) {
 			Card selectedCard = player1Hand.get(position[1]);
-			System.out.println(selectedCard.getName());
 			int fieldPos[] = {1, 0};
 			if (this.field.validAddPosition(fieldPos)) {
 				try {
@@ -85,7 +83,6 @@ public class Game {
 			
 		}
 		mainWindow.showNewField(this.field);
-		//this.attackOpponent();
 	}
 
 

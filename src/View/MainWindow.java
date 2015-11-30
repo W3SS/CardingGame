@@ -74,10 +74,10 @@ public class MainWindow extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		this.redraw();
+//		this.redraw();
 	}
 	
-	private void redraw() {
+	public void redraw() {
 		if (panel != null) {
 			contentPane.remove(panel);
 		}
@@ -233,11 +233,12 @@ public class MainWindow extends JFrame {
 		
 		btnEncerrarPartida = new JButton("ENC PART");
 		panel_2.add(btnEncerrarPartida);
+		this.pack();
 	}
 	
 	
 	public DeckEnum getChoosenDeck() {
-		return DeckEnum.MARVEL;
+		return DeckEnum.DC;
 	}
 
 	public void showNewField(Field field) {
@@ -313,6 +314,50 @@ public class MainWindow extends JFrame {
 				lastClickPos = new int[2];
 				lastClickPos[0] = 0;
 				lastClickPos[1] = 0;
+				game.selectHand(lastClickPos);
+			}
+		});
+		
+		btnH_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lastClickPos = new int[2];
+				lastClickPos[0] = 0;
+				lastClickPos[1] = 1;
+				game.selectHand(lastClickPos);
+			}
+		});
+		
+		btnH_2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lastClickPos = new int[2];
+				lastClickPos[0] = 0;
+				lastClickPos[1] = 2;
+				game.selectHand(lastClickPos);
+			}
+		});
+		
+		btnH_3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lastClickPos = new int[2];
+				lastClickPos[0] = 0;
+				lastClickPos[1] = 3;
+				game.selectHand(lastClickPos);
+			}
+		});
+		
+		btnH_4.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				lastClickPos = new int[2];
+				lastClickPos[0] = 0;
+				lastClickPos[1] = 4;
 				game.selectHand(lastClickPos);
 			}
 		});
