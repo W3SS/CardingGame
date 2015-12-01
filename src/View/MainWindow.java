@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import Control.Game;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
@@ -112,48 +113,64 @@ public class MainWindow extends JFrame {
 		updateImages();
 		
 		btnA = new JButton(imgC21);
+		btnA.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnA);
 		
 		btnB = new JButton(imgC22);
+		btnB.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnB);
 		
 		btnC = new JButton(imgC23);
+		btnC.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnC);
 		
 		btnD = new JButton(imgC24);
+		btnD.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnD);
 		
 		btnE = new JButton(imgC25);
+		btnE.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnE);
 		
+		
 		button = new JButton(imgC11);
+		button.setPreferredSize(new Dimension(152, 210));
 		panel.add(button);
 		
 		button_1 = new JButton(imgC12);
+		button_1.setPreferredSize(new Dimension(152, 210));
 		panel.add(button_1);
 		
 		button_2 = new JButton(imgC13);
+		button_2.setPreferredSize(new Dimension(152, 210));
 		panel.add(button_2);
 		
 		button_3 = new JButton(imgC14);
+		button_3.setPreferredSize(new Dimension(152, 210));
 		panel.add(button_3);
 		
 		button_4 = new JButton(imgC15);
+		button_4.setPreferredSize(new Dimension(152, 210));
 		panel.add(button_4);
 		
 		btnH = new JButton(imgH1);
+		btnH.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnH);
 		
 		btnH_1 = new JButton(imgH2);
+		btnH_1.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnH_1);
 		
 		btnH_2 = new JButton(imgH3);
+		btnH_2.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnH_2);
 		
 		btnH_3 = new JButton(imgH4);
+		btnH_3.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnH_3);
 		
 		btnH_4 = new JButton(imgH5);
+		btnH_4.setPreferredSize(new Dimension(152, 210));
 		panel.add(btnH_4);
 		
 		this.createListenerHand(btnH, 0);
