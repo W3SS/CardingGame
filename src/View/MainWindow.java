@@ -160,6 +160,25 @@ public class MainWindow extends JFrame {
 		btnH_4 = new JButton(imgH5);
 		panel.add(btnH_4);
 		
+		this.createListenerHand(btnH, 0);
+		this.createListenerHand(btnH_1, 1);
+		this.createListenerHand(btnH_2, 2);
+		this.createListenerHand(btnH_3, 3);
+		this.createListenerHand(btnH_4, 4);
+		
+		this.createListenerCamp1(button, 0);
+		this.createListenerCamp1(button_1, 1);
+		this.createListenerCamp1(button_2, 2);
+		this.createListenerCamp1(button_3, 3);
+		this.createListenerCamp1(button_4, 4);
+		
+		this.createListenerCamp2(button, 0);
+		this.createListenerCamp2(button_1, 1);
+		this.createListenerCamp2(button_2, 2);
+		this.createListenerCamp2(button_3, 3);
+		this.createListenerCamp2(button_4, 4);
+		
+		
 		if (panel_1 != null) {
 			contentPane.remove(panel_1);
 		}
@@ -285,65 +304,7 @@ public class MainWindow extends JFrame {
 		return null;
 	}
 	
-	public void getSelectedHandPosition() {
-
-		btnH.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				lastClickPos = new int[2];
-				lastClickPos[0] = 0;
-				lastClickPos[1] = 0;
-				game.selectHand(lastClickPos);
-			}
-		});
 		
-		btnH_1.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				lastClickPos = new int[2];
-				lastClickPos[0] = 0;
-				lastClickPos[1] = 1;
-				game.selectHand(lastClickPos);
-			}
-		});
-		
-		btnH_2.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				lastClickPos = new int[2];
-				lastClickPos[0] = 0;
-				lastClickPos[1] = 2;
-				game.selectHand(lastClickPos);
-			}
-		});
-		
-		btnH_3.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				lastClickPos = new int[2];
-				lastClickPos[0] = 0;
-				lastClickPos[1] = 3;
-				game.selectHand(lastClickPos);
-			}
-		});
-		
-		btnH_4.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				lastClickPos = new int[2];
-				lastClickPos[0] = 0;
-				lastClickPos[1] = 4;
-				game.selectHand(lastClickPos);
-			}
-		});
-		
-	}
-	
 	public void createListenerHand(JButton button, final int pos1) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

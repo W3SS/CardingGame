@@ -35,7 +35,7 @@ public class Game {
 	}
 	
 	public void handClick(int[] position) {
-		
+		System.out.println(position[1]);
 		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
 			this.lastPositionClick = position;
 			this.state = GameState.JG_ESCOLHER_CARTA_CAMPO1;
@@ -55,6 +55,7 @@ public class Game {
 			if (this.field.getCardOnPosition(position) != null) {
 				this.lastPositionClick = position;
 				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO2;
+				System.out.println("ESCOLHER C1 " + position[1]);
 			}
 		}
 	}
