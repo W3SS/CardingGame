@@ -15,20 +15,48 @@ import View.Menu;
 
 public class Game {
 
-	Field field;
-	MainWindow mainWindow;
-	Menu menu;
+	private Field field;
+	private MainWindow mainWindow;
+	private Menu menu;
+	private int lastPositionClick[];
+	private GameState state;
 	
 	public Game(String server) {
 		
 		this.mainWindow = new MainWindow(this);
 		this.startGame(server);
+		this.lastPositionClick = new int[2];
 		
 	}
 	
 	public static void main(String[] args) {
 		Game game = new Game(null);
 		game.startGame(null);
+	}
+	
+	public void handClick(int[] position) {
+		
+		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
+			if (position[0] == 0) {
+				this.lastPositionClick = position;
+				this.state = GameState.JG_ESCOLHER_CARTA_CAMPO1;
+			}
+		}
+		
+	}
+	
+	public void camp1Click(int[] position) {
+		
+		if (this.state == GameState.JG_ESCOLHER_CARTA_CAMPO1) {
+			if (this.field.validAddPosition(position)) {
+				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO1;
+				this.selectHand(this.lastPositionClick, position);
+			}
+		}
+	}
+	
+	public void camp2Click(int[] position) {
+		
 	}
 	
 	
@@ -52,36 +80,32 @@ public class Game {
 			int indexRand = generator.nextInt(deck.size());
 			try {
 				player1.addHandCard(deck.get(indexRand));
-				System.out.println(deck.get(indexRand).getId());
 				player1.removeFromDeck(deck.get(indexRand));
 			} catch (FullHandException e) {
 				//fazer um joptionpane para avisar mão cheia
 				e.printStackTrace();
 			}
 		}
+		
+		this.state = GameState.JG_ESCOLHER_CARTA_MAO;
 		mainWindow.setVisible(true);
 		mainWindow.showNewField(this.field);
-		mainWindow.getSelectedHandPosition();
+		
 	}
 
 
-	public void selectHand(int[] position) {
+	public void selectHand(int[] positionHand, int[] positionField) {
 		
 		List<Card> player1Hand = this.field.getPlayer1Hand();
-		if (position[0] == 0) {
-			Card selectedCard = player1Hand.get(position[1]);
-			int fieldPos[] = {1, 0};
-			if (this.field.validAddPosition(fieldPos)) {
-				try {
-					this.field.addCard(selectedCard, fieldPos);
-					this.field.getPlayer1().removeFromHand(selectedCard);
-				} catch (InvalidPositionException e) {
-					// fazer um joptionpane para avisar posiçao invalida
-					e.printStackTrace();
-				}
-			}
-			
+		Card selectedCard = player1Hand.get(positionHand[1]);
+		try {
+			this.field.addCard(selectedCard, positionField);
+			this.field.getPlayer1().removeFromHand(selectedCard);
+		} catch (InvalidPositionException e) {
+			// fazer um joptionpane para avisar posiçao invalida
+			e.printStackTrace();
 		}
+		
 		mainWindow.showNewField(this.field);
 	}
 
