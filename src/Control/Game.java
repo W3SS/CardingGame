@@ -15,20 +15,57 @@ import View.Menu;
 
 public class Game {
 
-	Field field;
-	MainWindow mainWindow;
-	Menu menu;
+	private Field field;
+	private MainWindow mainWindow;
+	private Menu menu;
+	private int lastPositionClick[];
+	private GameState state;
 	
 	public Game(String server) {
 		
 		this.mainWindow = new MainWindow(this);
 		this.startGame(server);
+		this.lastPositionClick = new int[2];
 		
 	}
 	
 	public static void main(String[] args) {
 		Game game = new Game(null);
 		game.startGame(null);
+	}
+	
+	public void handClick(int[] position) {
+		
+		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
+			this.lastPositionClick = position;
+			this.state = GameState.JG_ESCOLHER_CARTA_CAMPO1;
+		}
+		
+	}
+	
+	public void camp1Click(int[] position) {
+		
+		if (this.state == GameState.JG_ESCOLHER_CARTA_CAMPO1) {
+			if (this.field.validAddPosition(position)) {
+				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO1;
+				this.selectHand(this.lastPositionClick, position);
+			}
+		}
+		else if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO1) {
+			if (this.field.getCardOnPosition(position) != null) {
+				this.lastPositionClick = position;
+				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO2;
+			}
+		}
+	}
+	
+	public void camp2Click(int[] position) {
+		
+		if (this.field.getCardOnPosition(position) != null) {
+			this.state = GameState.RECEBER_JOGADA;
+			this.attackOpponent(this.lastPositionClick, position);
+		}
+			
 	}
 	
 	
@@ -52,76 +89,52 @@ public class Game {
 			int indexRand = generator.nextInt(deck.size());
 			try {
 				player1.addHandCard(deck.get(indexRand));
-				System.out.println(deck.get(indexRand).getId());
 				player1.removeFromDeck(deck.get(indexRand));
 			} catch (FullHandException e) {
 				//fazer um joptionpane para avisar mão cheia
 				e.printStackTrace();
 			}
 		}
+		
+		this.state = GameState.JG_ESCOLHER_CARTA_MAO;
 		mainWindow.setVisible(true);
 		mainWindow.showNewField(this.field);
-		mainWindow.getSelectedHandPosition();
+		
 	}
 
 
-	public void selectHand(int[] position) {
+	public void selectHand(int[] positionHand, int[] positionField) {
 		
 		List<Card> player1Hand = this.field.getPlayer1Hand();
-		if (position[0] == 0) {
-			Card selectedCard = player1Hand.get(position[1]);
-			int fieldPos[] = {1, 0};
-			if (this.field.validAddPosition(fieldPos)) {
-				try {
-					this.field.addCard(selectedCard, fieldPos);
-					this.field.getPlayer1().removeFromHand(selectedCard);
-				} catch (InvalidPositionException e) {
-					// fazer um joptionpane para avisar posiçao invalida
-					e.printStackTrace();
-				}
-			}
-			
+		Card selectedCard = player1Hand.get(positionHand[1]);
+		try {
+			this.field.addCard(selectedCard, positionField);
+			this.field.getPlayer1().removeFromHand(selectedCard);
+		} catch (InvalidPositionException e) {
+			// fazer um joptionpane para avisar posiçao invalida
+			e.printStackTrace();
 		}
+		
 		mainWindow.showNewField(this.field);
 	}
 
 
 
 
-	public void attackOpponent() {
+	public void attackOpponent(int[] positionCamp1, int[] positionCamp2) {
 		
-		while (!this.field.isEnemyCardsEmpty()) {
-			int selectedPos[] = mainWindow.getSelectedFieldPos();
-			while (selectedPos[0] != 1) {
-				//verifica se clicou em encerrar partida
-				if (mainWindow.getLastClick()[0] == 3 && mainWindow.getLastClick()[1] == 1) {
-					this.endTurn();
-				}
-				//avisa posição errada
-				selectedPos = mainWindow.getSelectedFieldPos();
-			}
-			int enemyPos[] = mainWindow.getSelectedFieldPos();
-			while (enemyPos[0] != 2) {
-				//verifica se clicou em encerrar partida
-				if (mainWindow.getLastClick()[0] == 3 && mainWindow.getLastClick()[1] == 1) {
-					this.endTurn();
-				}
-				//avisa posiçao enemigo errada
-				enemyPos = mainWindow.getSelectedFieldPos();
-			}
-			Battle battle = new Battle(this.field.getCardOnPosition(selectedPos), this.field.getCardOnPosition(enemyPos));
-			Card loserCard = battle.getLoser();
-			this.field.removeCard(loserCard);
-			Player loser = this.getCardOwner(loserCard);
-			int damage = battle.getDamage();
-			loser.applyDamage(damage);
-			if (damage == 0) {
-				Card winnerCard = battle.getWinner();
-				this.field.removeCard(winnerCard);
-			}
-			this.field.addBattle(battle);
-			mainWindow.showNewField(this.field);
+		Battle battle = new Battle(this.field.getCardOnPosition(positionCamp1), this.field.getCardOnPosition(positionCamp2));
+		Card loserCard = battle.getLoser();
+		this.field.removeCard(loserCard);
+		Player loser = this.getCardOwner(loserCard);
+		int damage = battle.getDamage();
+		loser.applyDamage(damage);
+		if (damage == 0) {
+			Card winnerCard = battle.getWinner();
+			this.field.removeCard(winnerCard);
 		}
+		this.field.addBattle(battle);
+		mainWindow.showNewField(this.field);
 		this.endTurn();
 		
 	}
