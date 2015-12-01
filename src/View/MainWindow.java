@@ -5,8 +5,6 @@ import Model.DeckEnum;
 import Model.Field;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -24,10 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 
@@ -40,7 +34,7 @@ public class MainWindow extends JFrame {
 	private JPanel panelGameWindow, panelTopBar, panelCards, panelSideBar;
 	private JButton btnC20, btnC21, btnC22, btnC23, btnC24, btnC10, btnC11, btnC12, btnC13, btnC14, 
 			btnH0, btnH1, btnH2, btnH3, btnH4, btnEncerrarPartida, btnNewButton;
-	private JLabel lblVocPontos, lblPontos , label, lblInimigoPontos, lblPontos_1, label_1, lblVezPlayer,
+	private JLabel LblPoints1, lblYourLife , label, lblInimigoPontos, lblEnemyLife, label_1, lblVezPlayer,
 			lblNewLabel;
 	private JTextPane txtpnOQueFazer;
 	private ImageIcon imgH0, imgH1, imgH2, imgH3, imgH4, imgC10, imgC11, imgC12, imgC13, imgC14, imgC20,
@@ -174,6 +168,30 @@ public class MainWindow extends JFrame {
 		this.createListenerCamp2(btnC24, 4);
 	}
 	
+	private void buildTopBar() {
+		
+		if (panelTopBar != null) {
+			panelGameWindow.remove(panelTopBar);
+		}
+		
+		panelTopBar = new JPanel();
+		panelTopBar.setBackground(Color.LIGHT_GRAY);
+		panelGameWindow.add(panelTopBar, BorderLayout.NORTH);
+		
+		LblPoints1 = new JLabel("PONTUAÇÃO:    Você:");
+		panelTopBar.add(LblPoints1);
+		
+		lblYourLife = new JLabel(this.player1Life + "");
+		panelTopBar.add(lblYourLife);
+		
+		lblInimigoPontos = new JLabel("   Inimigo:");
+		panelTopBar.add(lblInimigoPontos);
+		
+		lblEnemyLife = new JLabel(this.player2Life + "");
+		panelTopBar.add(lblEnemyLife);		
+		
+	}
+	
 	public void redraw() {
 		
 		if (panelCards != null)
@@ -189,28 +207,7 @@ public class MainWindow extends JFrame {
 		addCardButons();
 		createListeners();
 		
-		
-		if (panelTopBar != null) {
-			panelGameWindow.remove(panelTopBar);
-		}
-		panelTopBar = new JPanel();
-		panelTopBar.setBackground(Color.LIGHT_GRAY);
-		panelGameWindow.add(panelTopBar, BorderLayout.NORTH);
-		
-		lblVocPontos = new JLabel("Você: ");
-		panelTopBar.add(lblVocPontos);
-		
-		lblPontos = new JLabel(this.player1Life + "");
-		panelTopBar.add(lblPontos);
-		
-		label = new JLabel("                                  ");
-		panelTopBar.add(label);
-		
-		lblInimigoPontos = new JLabel("Inimigo: ");
-		panelTopBar.add(lblInimigoPontos);
-		
-		lblPontos_1 = new JLabel(this.player2Life + "");
-		panelTopBar.add(lblPontos_1);		
+		buildTopBar();
 		
 		if (panelSideBar != null) {
 			panelGameWindow.remove(panelSideBar);
@@ -221,8 +218,9 @@ public class MainWindow extends JFrame {
 		panelSideBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		txtpnOQueFazer = new JTextPane();
-		txtpnOQueFazer.setBackground(Color.LIGHT_GRAY);
-		txtpnOQueFazer.setText("O QUE FAZER\n TESTE");
+		txtpnOQueFazer.setBackground(Color.DARK_GRAY);
+		txtpnOQueFazer.setText("PŔOXIMO PASSO: \n" + this.getStateDescription());
+		txtpnOQueFazer.setForeground(Color.WHITE);;
 		txtpnOQueFazer.setEditable(false);
 		
 		
@@ -239,9 +237,12 @@ public class MainWindow extends JFrame {
 		this.pack();
 	}
 	
+	private String getStateDescription() {
+		return "iubjknsifkfai";
+	}
 	
 	public DeckEnum getChoosenDeck() {
-		return DeckEnum.DC;
+		return DeckEnum.MARVEL;
 	}
 
 	public void showNewField(Field field) {
