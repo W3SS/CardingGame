@@ -4,23 +4,14 @@ import br.ufsc.inf.leobr.cliente.Jogada;
 
 public class StartMessage implements Jogada {
 
-	private DeckEnum deckType;
+	private int randomStart;
 	
-	StartMessage(DeckEnum deckType) {
-		this.deckType = deckType;
+	public StartMessage( int randomStart) {
+		this.randomStart = randomStart;
 	}
 	
-	public DeckEnum getDeckType() {
-		return this.deckType;
-	}
-	
-	public void setDeckType(DeckEnum deckType) {
-		this.deckType = deckType;
-	}
-
-	public void iniciarPartidaRede() {
-		// TODO Auto-generated method stub
-		
+	public int getRandomStart() {
+		return this.randomStart;
 	}
 	
 	

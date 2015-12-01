@@ -12,6 +12,8 @@ import Exception.InvalidPositionException;
 import Model.*;
 import View.MainWindow;
 import View.Menu;
+import br.ufsc.inf.leobr.cliente.Jogada;
+import rede.AtorNetGames;
 
 public class Game {
 
@@ -20,18 +22,24 @@ public class Game {
 	private Menu menu;
 	private int lastPositionClick[];
 	private GameState state;
+	private AtorNetGames netGames;
+	private int whoStart;
+	private DeckEnum decktype;
 	
-	public Game(String server) {
+	public Game() {
 		
 		this.mainWindow = new MainWindow(this);
-		this.startGame(server);
+		this.netGames = new AtorNetGames(this);
 		this.lastPositionClick = new int[2];
+		this.whoStart = new Random().nextInt(1000);
+		this.decktype = DeckEnum.DC;
 		
 	}
 	
 	public static void main(String[] args) {
-		Game game = new Game(null);
-		game.startGame(null);
+		Game game = new Game();
+		game.startMatch();
+		//game.startGame();
 	}
 	
 	public void handClick(int[] position) {
@@ -79,20 +87,30 @@ public class Game {
 		}
 	}
 	
+	public void startMatch() {
+		
+		boolean connected = netGames.conectar("jogador", "localhost");
+		if (!connected) {
+			return;
+		}
+		StartMessage startMessage = new StartMessage(this.whoStart);
+		netGames.iniciarPartida();
+		netGames.enviarJogada(startMessage);
+		
+	}
 	
-	public void startGame(String server) {
+	public void startGame() {
 		
 		/* net games conexões
 		 * 
 		 * 
 		 * 
 		 */
-		DeckEnum type = mainWindow.getChoosenDeck();
 		CardShop cardShop = new CardShop();
-		List<Card> deck = cardShop.getDeck(type);
+		List<Card> deck = cardShop.getDeck(this.decktype);
 		List<Card> deck2 = cardShop.getDeck(DeckEnum.DC);
 		
-		Player player1 = new Player("Jogador1", type, deck);
+		Player player1 = new Player("Jogador1", this.decktype, deck);
 		Player player2 = new Player("Jogador2", null, null);
 		this.field = new Field(player1, player2);
 		//
@@ -159,10 +177,30 @@ public class Game {
 	
 	public void endTurn() {
 		// TODO Auto-generated method stub
-		System.out.println("end");
+		Move move = new Move();
+		move.setBattles(this.field.getBattles());
+		move.setCardsOn1(this.field.getCardsOn1());
+		move.setCardsOn2(this.field.getCardsOn2());
+		this.netGames.enviarJogada(move);
 	}
 	
-	public void receiveMove() {
+	public void receiveMove(Jogada jogada) {
+		
+		if (jogada instanceof Move) {
+			Move move = (Move) jogada;
+			move.invertData();
+			this.field.parseMove(move);
+			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+		} else if (jogada instanceof StartMessage) {
+			StartMessage startMessage = (StartMessage)jogada;
+			if (this.whoStart > startMessage.getRandomStart()) {
+				this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+				this.decktype = DeckEnum.DC;
+			} else {
+				this.state = GameState.RECEBER_JOGADA;
+				this.decktype = DeckEnum.MARVEL;
+			}
+		}
 
 	}
 

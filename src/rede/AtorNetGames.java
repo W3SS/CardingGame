@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.Game;
-import model.Jogador;
 import Control.*;
 
 /**
@@ -60,7 +58,7 @@ public class AtorNetGames implements OuvidorProxy{
         try {
             proxy.desconectar();
         } catch (NaoConectadoException ex) {
-            game.exibeMensagem(ex.getMessage());
+           // game.exibeMensagem(ex.getMessage());
         }
     }
     
@@ -68,7 +66,7 @@ public class AtorNetGames implements OuvidorProxy{
         try {
             proxy.iniciarPartida(2);
         } catch (NaoConectadoException ex) {
-            game.exibeMensagem(ex.getMessage());
+            //game.exibeMensagem(ex.getMessage());
         }
     }
     
@@ -76,31 +74,31 @@ public class AtorNetGames implements OuvidorProxy{
         try {
             proxy.enviaJogada(jogada);
         } catch (NaoJogandoException ex) {
-            game.exibeMensagem(ex.getMessage());
+            //game.exibeMensagem(ex.getMessage());
         }
     }
     
-    public List<Jogador> getJogadores() {
-        List<Jogador> jogadores = new ArrayList<Jogador>();
-        if (game.getJogadorAtual().getNome().equals(proxy.obterNomeAdversario(1))) {
-            for (int i = 1; i <= 2; i++) {
-                Jogador jogador = null;
-                try {
-                    jogador = new Jogador(i, proxy.obterNomeAdversario(i));
-                    jogadores.add(jogador);
-                } catch (Exception e){
-                    System.out.println("Sem jogadores suficientes");
-                }
-            }
-        } else {
-            Jogador jogador = game.getJogadorAtual();
-            jogadores.add(jogador);
-            jogador = new Jogador(proxy.obterNomeAdversario(2));
-            jogadores.add(jogador);
-        }
-        
-        return jogadores;
-    }
+//    public List<Jogador> getJogadores() {
+//        List<Jogador> jogadores = new ArrayList<Jogador>();
+//        if (game.getJogadorAtual().getNome().equals(proxy.obterNomeAdversario(1))) {
+//            for (int i = 1; i <= 2; i++) {
+//                Jogador jogador = null;
+//                try {
+//                    jogador = new Jogador(i, proxy.obterNomeAdversario(i));
+//                    jogadores.add(jogador);
+//                } catch (Exception e){
+//                    System.out.println("Sem jogadores suficientes");
+//                }
+//            }
+//        } else {
+//            Jogador jogador = game.getJogadorAtual();
+//            jogadores.add(jogador);
+//            jogador = new Jogador(proxy.obterNomeAdversario(2));
+//            jogadores.add(jogador);
+//        }
+//        
+//        return jogadores;
+//    }
     
     @Override
     public void iniciarNovaPartida(Integer posicao) {
@@ -109,8 +107,8 @@ public class AtorNetGames implements OuvidorProxy{
 
     @Override
     public void finalizarPartidaComErro(String message) {
-       game.exibeMensagem(message);
-       game.limparTodosCampos();
+       //game.exibeMensagem(message);
+      // game.limparTodosCampos();
     }
 
     @Override
@@ -120,18 +118,18 @@ public class AtorNetGames implements OuvidorProxy{
 
     @Override
     public void receberJogada(Jogada jogada) {
-        game.receberJogada(jogada);
+        game.receiveMove(jogada);
     }
 
     @Override
     public void tratarConexaoPerdida() {
-       game.exibeMensagem("Conexão foi perdida!");
-       game.limparTodosCampos();
+       //game.exibeMensagem("Conexão foi perdida!");
+       //game.limparTodosCampos();
     }
 
     @Override
     public void tratarPartidaNaoIniciada(String message) {
-        game.exibeMensagem(message);
+        //game.exibeMensagem(message);
     }
     
 }
