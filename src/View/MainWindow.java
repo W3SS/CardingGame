@@ -36,6 +36,7 @@ public class MainWindow extends JFrame {
 	private String[] Hid = new String[5];
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
+	private int player1Life, player2Life;
 	private JPanel contentPane, panel_1, panel, panel_2;
 	private JButton btnA, btnB, btnC, btnD, btnE, button, button_1, button_2, button_3, button_4, 
 			btnH, btnH_1, btnH_2, btnH_3, btnH_4, btnEncerrarPartida, btnNewButton;
@@ -202,7 +203,7 @@ public class MainWindow extends JFrame {
 		lblVocPontos = new JLabel("Você: ");
 		panel_1.add(lblVocPontos);
 		
-		lblPontos = new JLabel("PONTOSVC");
+		lblPontos = new JLabel(this.player1Life + "");
 		panel_1.add(lblPontos);
 		
 		label = new JLabel("      ");
@@ -211,7 +212,7 @@ public class MainWindow extends JFrame {
 		lblInimigoPontos = new JLabel("Inimigo: ");
 		panel_1.add(lblInimigoPontos);
 		
-		lblPontos_1 = new JLabel("PONTOSINIMIGO");
+		lblPontos_1 = new JLabel(this.player2Life + "");
 		panel_1.add(lblPontos_1);
 		
 		label_1 = new JLabel("                                        ");
@@ -237,11 +238,9 @@ public class MainWindow extends JFrame {
 		txtpnOQueFazer.setEditable(false);
 		panel_2.add(txtpnOQueFazer);
 		btnNewButton = new JButton("ENC TURNO");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		
 		panel_2.add(btnNewButton);
+		this.createListenerEncTurno(btnNewButton);
 		
 		btnEncerrarPartida = new JButton("ENC PART");
 		panel_2.add(btnEncerrarPartida);
@@ -250,7 +249,7 @@ public class MainWindow extends JFrame {
 	
 	
 	public DeckEnum getChoosenDeck() {
-		return DeckEnum.DC;
+		return DeckEnum.MARVEL;
 	}
 
 	public void showNewField(Field field) {
@@ -258,6 +257,8 @@ public class MainWindow extends JFrame {
 		Map<Integer, Card> cardsOn2 = field.getCardsOn2();
 		List<Card> handCards = field.getPlayer1Hand();
 		
+		this.player1Life = field.getPlayer1().getPoints();
+		this.player2Life = field.getPlayer2().getPoints();
 		
 		for (int k = 0; k < 5; k++) {
 			if (k >= handCards.size()) {
@@ -274,7 +275,6 @@ public class MainWindow extends JFrame {
 			}
 		}
 		
-		System.out.println("BLABLABLA");
 		
 		for (int k = 0; k < 5; k++) {
 			if (cardsOn1.containsKey(k)) {
@@ -282,9 +282,8 @@ public class MainWindow extends JFrame {
 			} else {
 				this.C1id[k] = "NULL";
 			}
-		}	
+		}
 		
-		System.out.println("BLABLABLA2");
 		
 		for (int k = 0; k < 5; k++) {
 			if (cardsOn2.containsKey(k)) {
@@ -293,9 +292,8 @@ public class MainWindow extends JFrame {
 				this.C2id[k] = "NULL";
 			}
 		}
-		System.out.println("BLABLABLA3");
+		
 		this.redraw();
-		System.out.println("BLABLABLA4");
 		
 		
 	}
@@ -341,6 +339,14 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				final int[] position = {2, pos1};
 				game.camp2Click(position);
+			}
+		});
+	}
+	
+	public void createListenerEncTurno(JButton button) {
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				game.clickEndTurn();;
 			}
 		});
 	}
