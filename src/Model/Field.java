@@ -76,15 +76,18 @@ public class Field {
 	}
 	
 	public void removeCard(Card card) {
-		removeCardFromCollection(card, this.cardsOn1);
-		removeCardFromCollection(card, this.cardsOn2);
+		if (cardsOn1.containsValue(card)) {
+			removeCardFromCollection(card, cardsOn1);
+		} else {
+			removeCardFromCollection(card, cardsOn2);
+		}
 	}
 	
 	private void removeCardFromCollection(Card card, Map<Integer, Card> collection) {
-		System.out.println(card.getName());
 		for (Map.Entry<Integer, Card> actualEntry : collection.entrySet()) {
 			if (card.getId() == actualEntry.getValue().getId()) {
 				collection.remove(actualEntry.getKey());
+				break;
 			}
 		}
 	}
