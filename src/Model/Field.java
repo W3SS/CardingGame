@@ -117,13 +117,12 @@ public class Field {
 		if (!this.validPosition(fieldPos)) {
 			return false;
 		}
-		
-		// if the position has a card, it is not valid to add:
-		else if (fieldPos[0] == 1)
-				return !this.cardsOn1.containsKey(fieldPos[1]);
-			
-		else  // if (fieldPos[0] == 2)
+	
+		else if (fieldPos[0] == 2)
 			return false;
+		
+		else
+			return true;
 	}	
 	
 	public void addCard(Card card, int[] fieldPos) throws InvalidPositionException {

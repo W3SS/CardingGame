@@ -64,11 +64,19 @@ public class Game {
 		
 		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2)
 			if (this.field.getCardOnPosition(position) != null 	) {
-				this.state = GameState.RECEBER_JOGADA;
 				System.out.println("ESCOLHER C2 " + position[1]);
+				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO1;
 				this.attackOpponent(this.lastPositionClick, position);
 			}
 			
+	}
+	
+	public void clickEndTurn() {
+		
+		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO1 || this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2) {
+			this.state = GameState.RECEBER_JOGADA;
+			this.endTurn();
+		}
 	}
 	
 	
@@ -82,13 +90,18 @@ public class Game {
 		DeckEnum type = mainWindow.getChoosenDeck();
 		CardShop cardShop = new CardShop();
 		List<Card> deck = cardShop.getDeck(type);
+		List<Card> deck2 = cardShop.getDeck(DeckEnum.DC);
 		
 		Player player1 = new Player("Jogador1", type, deck);
 		Player player2 = new Player("Jogador2", null, null);
 		this.field = new Field(player1, player2);
 		//
 		int postest[] = {2, 0};
-		this.field.addCamp2(deck.get(0), postest);
+		this.field.addCamp2(deck2.get(0), postest);
+		//
+		//
+		int postest1[] = {2, 1};
+		this.field.addCamp2(deck2.get(2), postest1);
 		//
 		Random generator = new Random();
 		for (int i=0; i<5; i++) {
@@ -142,13 +155,12 @@ public class Game {
 		}
 		this.field.addBattle(battle);
 		mainWindow.showNewField(this.field);
-		this.endTurn();
 		
 	}
 	
 	public void endTurn() {
 		// TODO Auto-generated method stub
-		
+		System.out.println("end");
 	}
 	
 	public void receiveMove() {
