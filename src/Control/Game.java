@@ -35,7 +35,7 @@ public class Game {
 	}
 	
 	public void handClick(int[] position) {
-		
+		System.out.println(position[1]);
 		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
 			this.lastPositionClick = position;
 			this.state = GameState.JG_ESCOLHER_CARTA_CAMPO1;
@@ -55,6 +55,7 @@ public class Game {
 			if (this.field.getCardOnPosition(position) != null) {
 				this.lastPositionClick = position;
 				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO2;
+				System.out.println("ESCOLHER C1 " + position[1]);
 			}
 		}
 	}
@@ -64,6 +65,7 @@ public class Game {
 		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2)
 			if (this.field.getCardOnPosition(position) != null 	) {
 				this.state = GameState.RECEBER_JOGADA;
+				System.out.println("ESCOLHER C2 " + position[1]);
 				this.attackOpponent(this.lastPositionClick, position);
 			}
 			
@@ -84,6 +86,10 @@ public class Game {
 		Player player1 = new Player("Jogador1", type, deck);
 		Player player2 = new Player("Jogador2", null, null);
 		this.field = new Field(player1, player2);
+		//
+		int postest[] = {2, 0};
+		this.field.addCamp2(deck.get(0), postest);
+		//
 		Random generator = new Random();
 		for (int i=0; i<5; i++) {
 			int indexRand = generator.nextInt(deck.size());
@@ -126,6 +132,7 @@ public class Game {
 		Battle battle = new Battle(this.field.getCardOnPosition(positionCamp1), this.field.getCardOnPosition(positionCamp2));
 		Card loserCard = battle.getLoser();
 		this.field.removeCard(loserCard);
+		System.out.println(loserCard.getName());
 		Player loser = this.getCardOwner(loserCard);
 		int damage = battle.getDamage();
 		loser.applyDamage(damage);

@@ -81,8 +81,9 @@ public class Field {
 	}
 	
 	private void removeCardFromCollection(Card card, Map<Integer, Card> collection) {
+		System.out.println(card.getName());
 		for (Map.Entry<Integer, Card> actualEntry : collection.entrySet()) {
-			if (card.getId() == actualEntry.getKey()) {
+			if (card.getId() == actualEntry.getValue().getId()) {
 				collection.remove(actualEntry.getKey());
 			}
 		}
@@ -167,6 +168,10 @@ public class Field {
 
 	public void addBattle(Battle battle) {
 		this.battles.add(battle);
+	}
+	
+	public void addCamp2(Card card, int position[]) {
+		this.cardsOn2.put(position[1], card);
 	}
 
 }
