@@ -37,14 +37,16 @@ public class MainWindow extends JFrame {
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
 	private int player1Life, player2Life;
-	private JPanel contentPane, panel_1, panel, panel_2;
-	private JButton btnA, btnB, btnC, btnD, btnE, button, button_1, button_2, button_3, button_4, 
-			btnH, btnH_1, btnH_2, btnH_3, btnH_4, btnEncerrarPartida, btnNewButton;
+	private JPanel panelGameWindow, panelTopBar, panelCards, panelSideBar;
+	private JButton btnC20, btnC21, btnC22, btnC23, btnC24, btnC10, btnC11, btnC12, btnC13, btnC14, 
+			btnH0, btnH1, btnH2, btnH3, btnH4, btnEncerrarPartida, btnNewButton;
 	private JLabel lblVocPontos, lblPontos , label, lblInimigoPontos, lblPontos_1, label_1, lblVezPlayer,
 			lblNewLabel;
 	private JTextPane txtpnOQueFazer;
-	private ImageIcon imgH1, imgH2, imgH3, imgH4, imgH5, imgC11, imgC12, imgC13, imgC14, imgC15, imgC21,
-			imgC22, imgC23, imgC24, imgC25;
+	private ImageIcon imgH0, imgH1, imgH2, imgH3, imgH4, imgC10, imgC11, imgC12, imgC13, imgC14, imgC20,
+			imgC21, imgC22, imgC23, imgC24;
+	private ImageIcon imgET = new ImageIcon("database/img/ENC_TURNO.png");
+	private ImageIcon imgEP = new ImageIcon("database/img/ENC_PARTIDA.png");
 	int[] lastClickPos;
 	private Game game;
 
@@ -69,187 +71,177 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow(Game game) {
+		setResizable(false);
 		this.game = game;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 890, 680);
-		contentPane = new JPanel();
-		contentPane.setBackground(Color.BLACK);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		setBounds(100, 10, 200, 200);
+		panelGameWindow = new JPanel();
+		panelGameWindow.setBackground(Color.BLACK);
+		panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
+		panelGameWindow.setLayout(new BorderLayout(0, 0));
+		setContentPane(panelGameWindow);
 		
 //		this.redraw();
 	}
 	
-	private void updateImages() {
+	private void loadImages() {
 		
-		imgH1 = new ImageIcon("database/img/" + Hid[0] + ".png");
-		imgH2 = new ImageIcon("database/img/" + Hid[1] + ".png");
-		imgH3 = new ImageIcon("database/img/" + Hid[2] + ".png");
-		imgH4 = new ImageIcon("database/img/" + Hid[3] + ".png");
-		imgH5 = new ImageIcon("database/img/" + Hid[4] + ".png");
+		imgH0 = new ImageIcon("database/img/" + Hid[0] + ".png");
+		imgH1 = new ImageIcon("database/img/" + Hid[1] + ".png");
+		imgH2 = new ImageIcon("database/img/" + Hid[2] + ".png");
+		imgH3 = new ImageIcon("database/img/" + Hid[3] + ".png");
+		imgH4 = new ImageIcon("database/img/" + Hid[4] + ".png");
 		
-		imgC11 = new ImageIcon("database/img/" + C1id[0] + ".png");
-		imgC12 = new ImageIcon("database/img/" + C1id[1] + ".png");
-		imgC13 = new ImageIcon("database/img/" + C1id[2] + ".png");
-		imgC14 = new ImageIcon("database/img/" + C1id[3] + ".png");
-		imgC15 = new ImageIcon("database/img/" + C1id[4] + ".png");
+		imgC10 = new ImageIcon("database/img/" + C1id[0] + ".png");
+		imgC11 = new ImageIcon("database/img/" + C1id[1] + ".png");
+		imgC12 = new ImageIcon("database/img/" + C1id[2] + ".png");
+		imgC13 = new ImageIcon("database/img/" + C1id[3] + ".png");
+		imgC14 = new ImageIcon("database/img/" + C1id[4] + ".png");
 		
-		imgC21 = new ImageIcon("database/img/" + C2id[0] + ".png");
-		imgC22 = new ImageIcon("database/img/" + C2id[1] + ".png");
-		imgC23 = new ImageIcon("database/img/" + C2id[2] + ".png");
-		imgC24 = new ImageIcon("database/img/" + C2id[3] + ".png");
-		imgC25 = new ImageIcon("database/img/" + C2id[4] + ".png");
+		imgC20 = new ImageIcon("database/img/" + C2id[0] + ".png");
+		imgC21 = new ImageIcon("database/img/" + C2id[1] + ".png");
+		imgC22 = new ImageIcon("database/img/" + C2id[2] + ".png");
+		imgC23 = new ImageIcon("database/img/" + C2id[3] + ".png");
+		imgC24 = new ImageIcon("database/img/" + C2id[4] + ".png");
+	}
+	
+	private void addButton(JButton button) {
+		button.setPreferredSize(new Dimension(152, 210));
+		panelCards.add(button);
+	}
+	
+	private void createCardButtons() {
+		
+		btnC20 = new JButton(imgC20);
+		btnC21 = new JButton(imgC21);
+		btnC22 = new JButton(imgC22);
+		btnC23 = new JButton(imgC23);
+		btnC24 = new JButton(imgC24);
+		
+		btnC10 = new JButton(imgC10);
+		btnC11 = new JButton(imgC11);
+		btnC12 = new JButton(imgC12);
+		btnC13 = new JButton(imgC13);
+		btnC14 = new JButton(imgC14);
+		
+		btnH0 = new JButton(imgH0);
+		btnH1 = new JButton(imgH1);
+		btnH2 = new JButton(imgH2);
+		btnH3 = new JButton(imgH3);
+		btnH4 = new JButton(imgH4);
+			
+	}
+	
+	private void addCardButons() {
+
+		addButton(btnC20);
+		addButton(btnC21);
+		addButton(btnC22);
+		addButton(btnC23);
+		addButton(btnC24);
+		
+		addButton(btnC10);
+		addButton(btnC11);
+		addButton(btnC12);
+		addButton(btnC13);
+		addButton(btnC14);
+		
+		addButton(btnH0);
+		addButton(btnH1);
+		addButton(btnH2);
+		addButton(btnH3);
+		addButton(btnH4);
+		
+	}
+	
+	private void createListeners() {
+		this.createListenerHand(btnH0, 0);
+		this.createListenerHand(btnH1, 1);
+		this.createListenerHand(btnH2, 2);
+		this.createListenerHand(btnH3, 3);
+		this.createListenerHand(btnH4, 4);
+		
+		this.createListenerCamp1(btnC10, 0);
+		this.createListenerCamp1(btnC11, 1);
+		this.createListenerCamp1(btnC12, 2);
+		this.createListenerCamp1(btnC13, 3);
+		this.createListenerCamp1(btnC14, 4);
+		
+		this.createListenerCamp2(btnC20, 0);
+		this.createListenerCamp2(btnC21, 1);
+		this.createListenerCamp2(btnC22, 2);
+		this.createListenerCamp2(btnC23, 3);
+		this.createListenerCamp2(btnC24, 4);
 	}
 	
 	public void redraw() {
-		if (panel != null) {
-			contentPane.remove(panel);
+		
+		if (panelCards != null)
+			panelGameWindow.remove(panelCards);
+				
+		panelCards = new JPanel();
+		panelCards.setBackground(Color.BLACK);
+		panelGameWindow.add(panelCards, BorderLayout.CENTER);
+		panelCards.setLayout(new GridLayout(3, 5, 0, 0));
+		
+		loadImages();
+		createCardButtons();
+		addCardButons();
+		createListeners();
+		
+		
+		if (panelTopBar != null) {
+			panelGameWindow.remove(panelTopBar);
 		}
-		panel = new JPanel();
-		panel.setBackground(Color.BLACK);
-		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new GridLayout(3, 5, 0, 0));
-		
-		updateImages();
-		
-		btnA = new JButton(imgC21);
-		btnA.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnA);
-		
-		btnB = new JButton(imgC22);
-		btnB.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnB);
-		
-		btnC = new JButton(imgC23);
-		btnC.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnC);
-		
-		btnD = new JButton(imgC24);
-		btnD.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnD);
-		
-		btnE = new JButton(imgC25);
-		btnE.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnE);
-		
-		
-		button = new JButton(imgC11);
-		button.setPreferredSize(new Dimension(152, 210));
-		panel.add(button);
-		
-		button_1 = new JButton(imgC12);
-		button_1.setPreferredSize(new Dimension(152, 210));
-		panel.add(button_1);
-		
-		button_2 = new JButton(imgC13);
-		button_2.setPreferredSize(new Dimension(152, 210));
-		panel.add(button_2);
-		
-		button_3 = new JButton(imgC14);
-		button_3.setPreferredSize(new Dimension(152, 210));
-		panel.add(button_3);
-		
-		button_4 = new JButton(imgC15);
-		button_4.setPreferredSize(new Dimension(152, 210));
-		panel.add(button_4);
-		
-		btnH = new JButton(imgH1);
-		btnH.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnH);
-		
-		btnH_1 = new JButton(imgH2);
-		btnH_1.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnH_1);
-		
-		btnH_2 = new JButton(imgH3);
-		btnH_2.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnH_2);
-		
-		btnH_3 = new JButton(imgH4);
-		btnH_3.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnH_3);
-		
-		btnH_4 = new JButton(imgH5);
-		btnH_4.setPreferredSize(new Dimension(152, 210));
-		panel.add(btnH_4);
-		
-		this.createListenerHand(btnH, 0);
-		this.createListenerHand(btnH_1, 1);
-		this.createListenerHand(btnH_2, 2);
-		this.createListenerHand(btnH_3, 3);
-		this.createListenerHand(btnH_4, 4);
-		
-		this.createListenerCamp1(button, 0);
-		this.createListenerCamp1(button_1, 1);
-		this.createListenerCamp1(button_2, 2);
-		this.createListenerCamp1(button_3, 3);
-		this.createListenerCamp1(button_4, 4);
-		
-		this.createListenerCamp2(btnA, 0);
-		this.createListenerCamp2(btnB, 1);
-		this.createListenerCamp2(btnC, 2);
-		this.createListenerCamp2(btnD, 3);
-		this.createListenerCamp2(btnE, 4);
-		
-		
-		if (panel_1 != null) {
-			contentPane.remove(panel_1);
-		}
-		panel_1 = new JPanel();
-		panel_1.setBackground(Color.LIGHT_GRAY);
-		contentPane.add(panel_1, BorderLayout.NORTH);
+		panelTopBar = new JPanel();
+		panelTopBar.setBackground(Color.LIGHT_GRAY);
+		panelGameWindow.add(panelTopBar, BorderLayout.NORTH);
 		
 		lblVocPontos = new JLabel("Você: ");
-		panel_1.add(lblVocPontos);
+		panelTopBar.add(lblVocPontos);
 		
 		lblPontos = new JLabel(this.player1Life + "");
-		panel_1.add(lblPontos);
+		panelTopBar.add(lblPontos);
 		
-		label = new JLabel("      ");
-		panel_1.add(label);
+		label = new JLabel("                                  ");
+		panelTopBar.add(label);
 		
 		lblInimigoPontos = new JLabel("Inimigo: ");
-		panel_1.add(lblInimigoPontos);
+		panelTopBar.add(lblInimigoPontos);
 		
 		lblPontos_1 = new JLabel(this.player2Life + "");
-		panel_1.add(lblPontos_1);
+		panelTopBar.add(lblPontos_1);		
 		
-		label_1 = new JLabel("                                        ");
-		panel_1.add(label_1);
-		
-		lblVezPlayer = new JLabel("Vez: ");
-		panel_1.add(lblVezPlayer);
-		
-		lblNewLabel = new JLabel("PLAYER");
-		panel_1.add(lblNewLabel);
-		
-		if (panel_2 != null) {
-			contentPane.remove(panel_2);
+		if (panelSideBar != null) {
+			panelGameWindow.remove(panelSideBar);
 		}
-		panel_2 = new JPanel();
-		panel_2.setBackground(Color.BLACK);
-		contentPane.add(panel_2, BorderLayout.EAST);
-		panel_2.setLayout(new GridLayout(3, 1, 0, 0));
+		panelSideBar = new JPanel();
+		panelSideBar.setBackground(Color.BLACK);
+		panelGameWindow.add(panelSideBar, BorderLayout.EAST);
+		panelSideBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		txtpnOQueFazer = new JTextPane();
 		txtpnOQueFazer.setBackground(Color.LIGHT_GRAY);
 		txtpnOQueFazer.setText("O QUE FAZER\n TESTE");
 		txtpnOQueFazer.setEditable(false);
-		panel_2.add(txtpnOQueFazer);
-		btnNewButton = new JButton("ENC TURNO");
 		
-		panel_2.add(btnNewButton);
+		
+		panelSideBar.add(txtpnOQueFazer);
+		btnNewButton = new JButton(imgET);
+		btnNewButton.setPreferredSize(new Dimension(120, 210));
+		
+		panelSideBar.add(btnNewButton);
 		this.createListenerEncTurno(btnNewButton);
 		
-		btnEncerrarPartida = new JButton("ENC PART");
-		panel_2.add(btnEncerrarPartida);
+		btnEncerrarPartida = new JButton(imgEP);
+		btnEncerrarPartida.setPreferredSize(new Dimension(120, 210));
+		panelSideBar.add(btnEncerrarPartida);
 		this.pack();
 	}
 	
 	
 	public DeckEnum getChoosenDeck() {
-		return DeckEnum.MARVEL;
+		return DeckEnum.DC;
 	}
 
 	public void showNewField(Field field) {
@@ -300,7 +292,7 @@ public class MainWindow extends JFrame {
 
 	public int[] getSelectedFieldPos() {
 		
-//		btnH.addActionListener(new ActionListener() {
+//		btnH0.addActionListener(new ActionListener() {
 //			
 //			@Override
 //			public void actionPerformed(ActionEvent e) {
