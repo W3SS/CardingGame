@@ -61,10 +61,11 @@ public class Game {
 	
 	public void camp2Click(int[] position) {
 		
-		if (this.field.getCardOnPosition(position) != null) {
-			this.state = GameState.RECEBER_JOGADA;
-			this.attackOpponent(this.lastPositionClick, position);
-		}
+		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2)
+			if (this.field.getCardOnPosition(position) != null) {
+				this.state = GameState.RECEBER_JOGADA;
+				this.attackOpponent(this.lastPositionClick, position);
+			}
 			
 	}
 	
