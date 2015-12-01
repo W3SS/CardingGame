@@ -139,16 +139,26 @@ public class Field {
 	}
 	
 	public void parseMove(Move move) {
-		this.setPoints(move.getPoints());
-		this.setCardsOn1(move.getCardsOn1());
-		this.setCardsOn2(move.getCardsOn2());
-		//this.setBattles(move.getBattles());
 		
-		//Game.updatePoints();
-		//Game.updateField();
+		this.setPoints(move.getPoints());
+		List<Card> cardsMove1 = move.getCardsOn1();
+		for (int i=0; i<5; i++) {
+			this.cardsOn1.put(i, cardsMove1.get(i));
+		}
+		List<Card> cardsMove2 = move.getCardsOn2();
+		for (int i=0; i<5; i++) {
+			this.cardsOn2.put(i, cardsMove2.get(i));
+		}
+		this.setBattles(move.getBattles());
 		
 	}
 	
+	private void setBattles(List<Battle> battles) {
+		// TODO Auto-generated method stub
+		this.battles = battles;
+		
+	}
+
 	public List<Card> getPlayer1Hand() {
 		return this.player1.getHandCards();
 	}

@@ -129,17 +129,6 @@ public class Game {
 	
 	public void startNewMatch(int order) {
 		
-	//	JOptionPaneTools.message(order+"", "");
-//		if (this.whoStart > startMessage.getRandomStart()) {
-//			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
-//			this.decktype = DeckEnum.DC;
-//		} else {
-//			this.state = GameState.RECEBER_JOGADA;
-//			this.decktype = DeckEnum.MARVEL;
-//		}
-////		this.netGames.enviarJogada(this.startMessage);
-//		this.startGame();
-
 		if (order == 1) {
 			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
 			this.decktype = DeckEnum.DC;
@@ -150,19 +139,11 @@ public class Game {
 		
 		CardShop cardShop = new CardShop();
 		List<Card> deck = cardShop.getDeck(this.decktype);
-//		List<Card> deck2 = cardShop.getDeck(DeckEnum.DC);
 		
 		Player player1 = new Player("Jogador1", this.decktype, deck);
 		Player player2 = new Player("Jogador2", null, null);
 		this.field = new Field(player1, player2);
-		//
-//		int postest[] = {2, 0};
-//		this.field.addCamp2(deck2.get(0), postest);
-		//
-		//
-//		int postest1[] = {2, 1};
-//		this.field.addCamp2(deck2.get(2), postest1);
-		//
+
 		Random generator = new Random();
 		for (int i=0; i<5; i++) {
 			int indexRand = generator.nextInt(deck.size());
@@ -175,7 +156,6 @@ public class Game {
 			}
 		}
 		
-		//this.state = GameState.JG_ESCOLHER_CARTA_MAO;
 		mainWindow.setVisible(true);
 		mainWindow.showNewField(this.field);
 		
@@ -221,36 +201,40 @@ public class Game {
 		// TODO Auto-generated method stub
 		Move move = new Move();
 		move.setBattles(this.field.getBattles());
-		move.setCardsOn1(this.field.getCardsOn1());
-		move.setCardsOn2(this.field.getCardsOn2());
+		List<Card> listCardsOn1 = new ArrayList<Card>();
+		for (Map.Entry<Integer, Card> actualEntry : this.field.getCardsOn1().entrySet()) {
+			if (actualEntry.getKey() < 5) {
+				listCardsOn1.add(actualEntry.getValue());
+			}
+		}
+		move.setCardsOn1(listCardsOn1);
+		List<Card> listCardsOn2 = new ArrayList<Card>();
+		for (Map.Entry<Integer, Card> actualEntry : this.field.getCardsOn1().entrySet()) {
+			if (actualEntry.getKey() < 5) {
+				listCardsOn2.add(actualEntry.getValue());
+			}
+		}
+		move.setCardsOn2(listCardsOn2);
 		this.netGames.enviarJogada(move);
 	}
 	
 	public void receiveMove(Jogada jogada) {
 		
-		//System.out.println("JOGADA RECEBIDA");
 		if (this.state == GameState.RECEBER_JOGADA) {
 			if (jogada instanceof Move) {
 				Move move = (Move) jogada;
 				move.invertData();
 				this.field.parseMove(move);
 				this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+				try {
+					this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());
+				} catch (FullHandException | EmptyDeckException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				this.mainWindow.showNewField(this.field);
 			}
 		}
-//		if (this.state == GameState.INICIANDO_PARTIDA) {
-//			if (jogada instanceof StartMessage) {
-//				StartMessage startMessage = (StartMessage)jogada;
-//				if (this.whoStart > startMessage.getRandomStart()) {
-//					this.state = GameState.JG_ESCOLHER_CARTA_MAO;
-//					this.decktype = DeckEnum.DC;
-//				} else {
-//					this.state = GameState.RECEBER_JOGADA;
-//					this.decktype = DeckEnum.MARVEL;
-//				}
-////				this.netGames.enviarJogada(this.startMessage);
-//				this.startGame();
-//			}
-//		}
 	}
 
 	public Player getCardOwner(Card card) {

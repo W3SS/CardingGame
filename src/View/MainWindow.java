@@ -44,23 +44,6 @@ public class MainWindow extends JFrame {
 	int[] lastClickPos;
 	private Game game;
 
-//	/**
-//	 * Launch the application.
-//	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					MainWindow frame = new MainWindow();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-
 	/**
 	 * Create the frame.
 	 */
@@ -75,7 +58,6 @@ public class MainWindow extends JFrame {
 		panelGameWindow.setLayout(new BorderLayout(0, 0));
 		setContentPane(panelGameWindow);
 		
-//		this.redraw();
 	}
 	
 	private void loadImages() {
