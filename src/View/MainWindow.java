@@ -41,6 +41,8 @@ public class MainWindow extends JFrame {
 	private JLabel lblVocPontos, lblPontos , label, lblInimigoPontos, lblPontos_1, label_1, lblVezPlayer,
 			lblNewLabel;
 	private JTextPane txtpnOQueFazer;
+	private ImageIcon imgH1, imgH2, imgH3, imgH4, imgH5, imgC11, imgC12, imgC13, imgC14, imgC15, imgC21,
+			imgC22, imgC23, imgC24, imgC25;
 	int[] lastClickPos;
 	private Game game;
 
@@ -77,6 +79,27 @@ public class MainWindow extends JFrame {
 //		this.redraw();
 	}
 	
+	private void updateImages() {
+		
+		imgH1 = new ImageIcon("database/img/" + Hid[0] + ".png");
+		imgH2 = new ImageIcon("database/img/" + Hid[1] + ".png");
+		imgH3 = new ImageIcon("database/img/" + Hid[2] + ".png");
+		imgH4 = new ImageIcon("database/img/" + Hid[3] + ".png");
+		imgH5 = new ImageIcon("database/img/" + Hid[4] + ".png");
+		
+		imgC11 = new ImageIcon("database/img/" + C1id[0] + ".png");
+		imgC12 = new ImageIcon("database/img/" + C1id[1] + ".png");
+		imgC13 = new ImageIcon("database/img/" + C1id[2] + ".png");
+		imgC14 = new ImageIcon("database/img/" + C1id[3] + ".png");
+		imgC15 = new ImageIcon("database/img/" + C1id[4] + ".png");
+		
+		imgC21 = new ImageIcon("database/img/" + C2id[0] + ".png");
+		imgC22 = new ImageIcon("database/img/" + C2id[1] + ".png");
+		imgC23 = new ImageIcon("database/img/" + C2id[2] + ".png");
+		imgC24 = new ImageIcon("database/img/" + C2id[3] + ".png");
+		imgC25 = new ImageIcon("database/img/" + C2id[4] + ".png");
+	}
+	
 	public void redraw() {
 		if (panel != null) {
 			contentPane.remove(panel);
@@ -86,56 +109,13 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new GridLayout(3, 5, 0, 0));
 		
-		ImageIcon imgH1;
-		imgH1 = new ImageIcon("database/img/" + Hid[0] + ".png");
-		
-		ImageIcon imgH2;
-		imgH2 = new ImageIcon("database/img/" + Hid[1] + ".png");
-		
-		ImageIcon imgH3;
-		imgH3 = new ImageIcon("database/img/" + Hid[2] + ".png");
-		
-		ImageIcon imgH4;  
-		imgH4 = new ImageIcon("database/img/" + Hid[3] + ".png");
-		
-		ImageIcon imgH5;
-		imgH5 = new ImageIcon("database/img/" + Hid[4] + ".png");
-		
-		ImageIcon imgC11;
-		imgC11 = new ImageIcon("database/img/" + C1id[0] + ".png");
-		
-		ImageIcon imgC12;
-		imgC12 = new ImageIcon("database/img/" + C1id[1] + ".png");
-		
-		ImageIcon imgC13;
-		imgC13 = new ImageIcon("database/img/" + C1id[2] + ".png");
-		
-		ImageIcon imgC14;  
-		imgC14 = new ImageIcon("database/img/" + C1id[3] + ".png");
-		
-		ImageIcon imgC15;
-		imgC15 = new ImageIcon("database/img/" + C1id[4] + ".png");
-		
-		ImageIcon imgC21;
-		imgC21 = new ImageIcon("database/img/" + C2id[0] + ".png");
-		
-		ImageIcon imgC22;
-		imgC22 = new ImageIcon("database/img/" + C2id[1] + ".png");
-		
-		ImageIcon imgC23;
-		imgC23 = new ImageIcon("database/img/" + C2id[2] + ".png");
-		
-		ImageIcon imgC24;  
-		imgC24 = new ImageIcon("database/img/" + C2id[3] + ".png");
-		
-		ImageIcon imgC25;
-		imgC25 = new ImageIcon("database/img/" + C2id[4] + ".png");
+		updateImages();
 		
 		btnA = new JButton(imgC21);
-		btnA.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+//		btnA.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//			}
+//		});
 		panel.add(btnA);
 		
 		btnB = new JButton(imgC22);
@@ -362,6 +342,33 @@ public class MainWindow extends JFrame {
 			}
 		});
 		
+	}
+	
+	public void createListenerHand(JButton button, final int pos1) {
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				final int[] position = {0, pos1};
+				game.handClick(position);
+			}
+		});
+	}
+	
+	public void createListenerCamp1(JButton button, final int pos1) {
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				final int[] position = {1, pos1};
+				game.camp1Click(position);
+			}
+		});
+	}
+	
+	public void createListenerCamp2(JButton button, final int pos1) {
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				final int[] position = {2, pos1};
+				game.camp2Click(position);
+			}
+		});
 	}
 
 
