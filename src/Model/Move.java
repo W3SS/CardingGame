@@ -1,6 +1,9 @@
 package Model;
 
 import java.util.Map;
+
+import br.ufsc.inf.leobr.cliente.Jogada;
+
 import java.util.List;
 
 public class Move implements Jogada {

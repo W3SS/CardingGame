@@ -1,5 +1,7 @@
 package Model;
 
+import br.ufsc.inf.leobr.cliente.Jogada;
+
 public class StartMessage implements Jogada {
 
 	private DeckEnum deckType;
@@ -14,6 +16,11 @@ public class StartMessage implements Jogada {
 	
 	public void setDeckType(DeckEnum deckType) {
 		this.deckType = deckType;
+	}
+
+	public void iniciarPartidaRede() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

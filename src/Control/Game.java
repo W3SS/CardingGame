@@ -145,7 +145,6 @@ public class Game {
 		Battle battle = new Battle(this.field.getCardOnPosition(positionCamp1), this.field.getCardOnPosition(positionCamp2));
 		Card loserCard = battle.getLoser();
 		this.field.removeCard(loserCard);
-		System.out.println(loserCard.getName());
 		Player loser = this.getCardOwner(loserCard);
 		int damage = battle.getDamage();
 		loser.applyDamage(damage);
