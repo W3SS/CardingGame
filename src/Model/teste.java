@@ -18,7 +18,7 @@ public class teste {
 		
 		List<Card> deck = cardShop.getDeck(DeckEnum.MARVEL);
 		for (Card card : deck) {
-			System.out.println(card.getName());
+//			System.out.println(card.getName());
 		}
 		
 

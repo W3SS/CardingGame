@@ -28,7 +28,7 @@ public class CardShop {
 			Class.forName("org.sqlite.JDBC");
 			this.connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
 			this.connection.setAutoCommit(false);
-			System.out.println("Opened database successfully");
+//			System.out.println("Opened database successfully");
 			this.statement = this.connection.createStatement();		
 			
 		} catch (ClassNotFoundException e) {

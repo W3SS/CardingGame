@@ -102,7 +102,8 @@ public class AtorNetGames implements OuvidorProxy{
     
     @Override
     public void iniciarNovaPartida(Integer posicao) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+    	this.game.startNewMatch(posicao);
+    	//throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

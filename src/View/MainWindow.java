@@ -261,10 +261,10 @@ public class MainWindow extends JFrame {
 			Card card = handCards.get(k);
 			if (card != null) {
 				this.Hid[k] = card.getId() + "";
-				System.out.println(card.getId());
+//				System.out.println(card.getId());
 			} else {
 				this.Hid[k] = "NULL";
-				System.out.println("NULLLL");
+//				System.out.println("NULLLL");
 			}
 		}
 		

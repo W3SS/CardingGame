@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 import Exception.EmptyDeckException;
 import Exception.FullHandException;
 import Exception.InvalidPositionException;
 import Model.*;
+import View.JOptionPaneTools;
 import View.MainWindow;
 import View.Menu;
 import br.ufsc.inf.leobr.cliente.Jogada;
@@ -25,6 +28,7 @@ public class Game {
 	private AtorNetGames netGames;
 	private int whoStart;
 	private DeckEnum decktype;
+	private StartMessage startMessage;
 	
 	public Game() {
 		
@@ -32,18 +36,41 @@ public class Game {
 		this.netGames = new AtorNetGames(this);
 		this.lastPositionClick = new int[2];
 		this.whoStart = new Random().nextInt(1000);
-		this.decktype = DeckEnum.DC;
+		this.state = GameState.INICIANDO_PARTIDA;
+		//this.decktype = DeckEnum.DC;
 		
 	}
 	
 	public static void main(String[] args) {
+		boolean saiu = false;
+		boolean connected = false;
 		Game game = new Game();
-		game.startMatch();
-		//game.startGame();
+
+//		while (!saiu) {
+
+			if (!connected) {
+				int connect = JOptionPaneTools.askOption("", new String[] {"Conectar", "Sair"});
+				if (connect == 0) {
+					connected = game.connect();
+				} else if (connect == 1) {
+					saiu = true;
+				}
+//				continue;
+			}
+				int start = JOptionPaneTools.askOption("", new String[] {"Iniciar", "Desonectar"});
+				if (start == 0) {
+					game.startMatch();
+					
+				} else if (start == 1) {
+					//disconnect!!!
+					connected = false;
+				}
+//		}
 	}
+
 	
 	public void handClick(int[] position) {
-		System.out.println(position[1]);
+//		System.out.println(position[1]);
 		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
 			this.lastPositionClick = position;
 			this.state = GameState.JG_ESCOLHER_CARTA_CAMPO1;
@@ -63,7 +90,7 @@ public class Game {
 			if (this.field.getCardOnPosition(position) != null) {
 				this.lastPositionClick = position;
 				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO2;
-				System.out.println("ESCOLHER C1 " + position[1]);
+//				System.out.println("ESCOLHER C1 " + position[1]);
 			}
 		}
 	}
@@ -72,7 +99,7 @@ public class Game {
 		
 		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2)
 			if (this.field.getCardOnPosition(position) != null 	) {
-				System.out.println("ESCOLHER C2 " + position[1]);
+//				System.out.println("ESCOLHER C2 " + position[1]);
 				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO1;
 				this.attackOpponent(this.lastPositionClick, position);
 			}
@@ -87,39 +114,54 @@ public class Game {
 		}
 	}
 	
+	public boolean connect() {
+		return netGames.conectar("jogador", "localhost");
+	}
+	
 	public void startMatch() {
-		
-		boolean connected = netGames.conectar("jogador", "localhost");
-		if (!connected) {
-			return;
-		}
-		StartMessage startMessage = new StartMessage(this.whoStart);
+//		this.startMessage = new StartMessage(this.whoStart);
 		netGames.iniciarPartida();
-		netGames.enviarJogada(startMessage);
+//		netGames.enviarJogada(startMessage);
 		
 	}
 	
-	public void startGame() {
+	
+	
+	public void startNewMatch(int order) {
 		
-		/* net games conexões
-		 * 
-		 * 
-		 * 
-		 */
+	//	JOptionPaneTools.message(order+"", "");
+//		if (this.whoStart > startMessage.getRandomStart()) {
+//			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+//			this.decktype = DeckEnum.DC;
+//		} else {
+//			this.state = GameState.RECEBER_JOGADA;
+//			this.decktype = DeckEnum.MARVEL;
+//		}
+////		this.netGames.enviarJogada(this.startMessage);
+//		this.startGame();
+
+		if (order == 1) {
+			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+			this.decktype = DeckEnum.DC;
+		} else {
+			this.state = GameState.RECEBER_JOGADA;
+			this.decktype = DeckEnum.MARVEL;
+		}
+		
 		CardShop cardShop = new CardShop();
 		List<Card> deck = cardShop.getDeck(this.decktype);
-		List<Card> deck2 = cardShop.getDeck(DeckEnum.DC);
+//		List<Card> deck2 = cardShop.getDeck(DeckEnum.DC);
 		
 		Player player1 = new Player("Jogador1", this.decktype, deck);
 		Player player2 = new Player("Jogador2", null, null);
 		this.field = new Field(player1, player2);
 		//
-		int postest[] = {2, 0};
-		this.field.addCamp2(deck2.get(0), postest);
+//		int postest[] = {2, 0};
+//		this.field.addCamp2(deck2.get(0), postest);
 		//
 		//
-		int postest1[] = {2, 1};
-		this.field.addCamp2(deck2.get(2), postest1);
+//		int postest1[] = {2, 1};
+//		this.field.addCamp2(deck2.get(2), postest1);
 		//
 		Random generator = new Random();
 		for (int i=0; i<5; i++) {
@@ -133,7 +175,7 @@ public class Game {
 			}
 		}
 		
-		this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+		//this.state = GameState.JG_ESCOLHER_CARTA_MAO;
 		mainWindow.setVisible(true);
 		mainWindow.showNewField(this.field);
 		
@@ -186,22 +228,29 @@ public class Game {
 	
 	public void receiveMove(Jogada jogada) {
 		
-		if (jogada instanceof Move) {
-			Move move = (Move) jogada;
-			move.invertData();
-			this.field.parseMove(move);
-			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
-		} else if (jogada instanceof StartMessage) {
-			StartMessage startMessage = (StartMessage)jogada;
-			if (this.whoStart > startMessage.getRandomStart()) {
+		//System.out.println("JOGADA RECEBIDA");
+		if (this.state == GameState.RECEBER_JOGADA) {
+			if (jogada instanceof Move) {
+				Move move = (Move) jogada;
+				move.invertData();
+				this.field.parseMove(move);
 				this.state = GameState.JG_ESCOLHER_CARTA_MAO;
-				this.decktype = DeckEnum.DC;
-			} else {
-				this.state = GameState.RECEBER_JOGADA;
-				this.decktype = DeckEnum.MARVEL;
 			}
 		}
-
+//		if (this.state == GameState.INICIANDO_PARTIDA) {
+//			if (jogada instanceof StartMessage) {
+//				StartMessage startMessage = (StartMessage)jogada;
+//				if (this.whoStart > startMessage.getRandomStart()) {
+//					this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+//					this.decktype = DeckEnum.DC;
+//				} else {
+//					this.state = GameState.RECEBER_JOGADA;
+//					this.decktype = DeckEnum.MARVEL;
+//				}
+////				this.netGames.enviarJogada(this.startMessage);
+//				this.startGame();
+//			}
+//		}
 	}
 
 	public Player getCardOwner(Card card) {
