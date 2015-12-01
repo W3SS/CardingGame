@@ -112,10 +112,6 @@ public class MainWindow extends JFrame {
 		updateImages();
 		
 		btnA = new JButton(imgC21);
-//		btnA.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//			}
-//		});
 		panel.add(btnA);
 		
 		btnB = new JButton(imgC22);
@@ -172,11 +168,11 @@ public class MainWindow extends JFrame {
 		this.createListenerCamp1(button_3, 3);
 		this.createListenerCamp1(button_4, 4);
 		
-		this.createListenerCamp2(button, 0);
-		this.createListenerCamp2(button_1, 1);
-		this.createListenerCamp2(button_2, 2);
-		this.createListenerCamp2(button_3, 3);
-		this.createListenerCamp2(button_4, 4);
+		this.createListenerCamp2(btnA, 0);
+		this.createListenerCamp2(btnB, 1);
+		this.createListenerCamp2(btnC, 2);
+		this.createListenerCamp2(btnD, 3);
+		this.createListenerCamp2(btnE, 4);
 		
 		
 		if (panel_1 != null) {
