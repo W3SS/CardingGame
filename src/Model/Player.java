@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import Exception.EmptyDeckException;
 import Exception.FullHandException;
@@ -36,6 +37,10 @@ public class Player {
 		return this.points;
 	}
 	
+	public List<Card> getDeck() {
+		return deck;
+	}
+
 	public List<Card> getHandCards() {
 		return this.handCards;
 	}
@@ -57,7 +62,7 @@ public class Player {
 		if (this.deck.isEmpty()) {
 			throw new EmptyDeckException("O baralho está vazio");
 		}
-		Card topCard = this.deck.get(0);
+		Card topCard = this.deck.get(new Random().nextInt(this.deck.size()));
 		this.deck.remove(topCard);
 		return topCard;
 	}

@@ -116,6 +116,10 @@ public class Field {
 		
 	}
 	
+	public boolean validHandPosition(int[] fieldPos) {
+		return (fieldPos[1] < this.getPlayer1Hand().size()) && (fieldPos[0] == 0); 
+	}
+	
 	public boolean validAddPosition(int[] fieldPos) {
 		
 		if (!this.validPosition(fieldPos)) {

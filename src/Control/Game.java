@@ -88,8 +88,10 @@ public final class Game {
 	public void handClick(int[] position) {
 //		System.out.println(position[1]);
 		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
-			this.lastPositionClick = position;
-			setState(GameState.JG_ESCOLHER_CARTA_CAMPO1);
+			if (this.field.validHandPosition(position)) {
+				this.lastPositionClick = position;
+				setState(GameState.JG_ESCOLHER_CARTA_CAMPO1);
+			}
 		}
 		
 	}
@@ -189,15 +191,20 @@ public final class Game {
 
 		Random generator = new Random();
 		for (int i=0; i<5; i++) {
-			int indexRand = generator.nextInt(deck.size());
+			int indexRand = generator.nextInt(player1.getDeck().size());
 			try {
-				player1.addHandCard(deck.get(indexRand));
-				player1.removeFromDeck(deck.get(indexRand));
+				player1.addHandCard(player1.getDeck().get(indexRand));
+				player1.removeFromDeck(player1.getDeck().get(indexRand));
 			} catch (FullHandException e) {
 				//fazer um joptionpane para avisar mão cheia
 				e.printStackTrace();
 			}
 		}
+		for (Card card : player1.getDeck() ) {
+			System.out.println(card.getName());
+			System.out.println(card.getId());
+		}
+		
 		
 		mainWindow.setVisible(true);
 		mainWindow.showNewField(this.field);
@@ -242,16 +249,18 @@ public final class Game {
 	
 	public void endTurn() {
 		// TODO Auto-generated method stub
+		System.out.println("ENVIANDO");
 		Move move = new Move();
 		move.setBattles(this.field.getBattles());
 		move.setCardsOn1(this.field.getCardsOn1());
 		move.setCardsOn2(this.field.getCardsOn2());
 		move.setPoints(this.field.getPoints());
 		this.netGames.enviarJogada(move);
+		System.out.println("ENVIADO");
 	}
 	
 	public void receiveMove(Jogada jogada) {
-		
+		System.out.println("RECEBEU");
 		if (this.state == GameState.RECEBER_JOGADA) {
 			if (jogada instanceof Move) {
 				Move move = (Move) jogada;
@@ -262,17 +271,25 @@ public final class Game {
 				if (this.field.getPlayer1Hand().size() < 5) {
 					System.out.println("HUE\nassas");
 					try {
-						System.out.println(this.field.getPlayer1().popDeck().getName());
+//						System.out.println(this.field.getPlayer1().popDeck().getName());
 						this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());
-					} catch (FullHandException | EmptyDeckException e) {
-						// TODO Auto-generated catch block
-						//e.printStackTrace();
-					}
+						this.field.getPlayer1().popDeck();
+						this.field.getPlayer1().popDeck();
+						this.field.getPlayer1().popDeck();
+						this.field.getPlayer1().popDeck();
+						this.field.getPlayer1().popDeck();
+					} catch (FullHandException e) {
+					} catch (EmptyDeckException e) {
+						if (this.field.getPlayer1Hand().isEmpty()) {
+							this.endMatch();
+						}
+					} 
 				}
 				System.out.println("BABA");
 				this.mainWindow.showNewField(this.field);
 			}
 		}
+		System.out.println("PROCESSOU RECEBIDO");
 	}
 
 	public Player getCardOwner(Card card) {

@@ -63,6 +63,7 @@ public class MainWindow extends JFrame {
                 game.finalizeMatch(1);
             }
         });
+		
 	}
 	
 	private void loadImages() {
@@ -161,9 +162,14 @@ public class MainWindow extends JFrame {
 			panelGameWindow.remove(panelTopBar);
 		}
 		
-		panelTopBar = new JPanel();
-		panelTopBar.setBackground(Color.LIGHT_GRAY);
-		panelGameWindow.add(panelTopBar, BorderLayout.NORTH);
+		panelTopBar = null;
+				
+		while (panelTopBar == null) {
+			
+			panelTopBar = new JPanel();
+			panelTopBar.setBackground(Color.LIGHT_GRAY);
+			panelGameWindow.add(panelTopBar, BorderLayout.NORTH);
+		}
 		
 		LblPoints = new JLabel("PONTUAÇÃO:    Você: " + this.player1Life 
 				+ "    Inimigo: " + this.player2Life);
@@ -175,10 +181,15 @@ public class MainWindow extends JFrame {
 		if (panelSideBar != null) {
 			panelGameWindow.remove(panelSideBar);
 		}
-		panelSideBar = new JPanel();
-		panelSideBar.setBackground(Color.BLACK);
-		panelGameWindow.add(panelSideBar, BorderLayout.EAST);
-		panelSideBar.setLayout(new GridLayout(3, 1, 0, 0));
+		
+		panelSideBar = null;
+		
+		while (panelSideBar == null) {
+			panelSideBar = new JPanel();
+			panelSideBar.setBackground(Color.BLACK);
+			panelGameWindow.add(panelSideBar, BorderLayout.EAST);
+			panelSideBar.setLayout(new GridLayout(3, 1, 0, 0));
+		}
 		
 		txtpnOQueFazer = new JTextPane();
 		txtpnOQueFazer.setBackground(Color.DARK_GRAY);
@@ -203,14 +214,24 @@ public class MainWindow extends JFrame {
 	private void reconstructPanelCards() {
 		if (panelCards != null)
 			panelGameWindow.remove(panelCards);
-				
-		panelCards = new JPanel();
-		panelCards.setBackground(Color.BLACK);
-		panelGameWindow.add(panelCards, BorderLayout.CENTER);
-		panelCards.setLayout(new GridLayout(3, 5, 0, 0));
+		
+		panelCards = null;
+		
+		while (panelCards == null) {
+			panelCards = new JPanel();
+			panelCards.setBackground(Color.BLACK);
+			panelGameWindow.add(panelCards, BorderLayout.CENTER);
+			panelCards.setLayout(new GridLayout(3, 5, 0, 0));
+		}
+		
 	}
 	
-	public void redraw() {
+	public void draw() {
+		
+		//trocar os objetos
+	
+		btnC10.setIcon(imgC10);
+		panelCards.repaint();
 		
 		reconstructPanelCards();
 		
@@ -224,6 +245,10 @@ public class MainWindow extends JFrame {
 		updateSideBar();
 		
 		super.pack();
+	}
+	
+	public void repaint() {
+		
 	}
 	
 	private String getStateDescription() {
@@ -337,8 +362,12 @@ public class MainWindow extends JFrame {
 			}
 		}
 		
-		this.redraw();
-		
+		this.repaint();
+//		if (panelGameWindow.getComponentCount() != 3 || panelCards.getComponentCount() != 15 
+//				|| panelSideBar.getComponentCount() != 3 || panelTopBar.getComponentCount() != 1) {
+//			JOptionPaneTools.message("Redraw não redesenho tudo, tentando novamente", "");
+//			showNewField(field);
+//		}
 		
 	}
 
