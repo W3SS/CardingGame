@@ -50,7 +50,7 @@ public final class Game {
 	
 	public void setState(GameState state) {
 		this.state = state;
-		this.mainWindow.updateSideBar();;
+		this.mainWindow.setState(state);
 	}
 	
 	private void showConnectMenu() {
@@ -169,7 +169,6 @@ public final class Game {
 	}
 	
 	public void startNewMatch(int order) {
-		
 		if (order == 1) {
 			this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
 			this.decktype = DeckEnum.DC;
@@ -201,9 +200,8 @@ public final class Game {
 			System.out.println(card.getId());
 		}
 		
-		
 		mainWindow.setVisible(true);
-		mainWindow.showNewField(this.field);
+		mainWindow.draw(this.field);
 		
 	}
 
