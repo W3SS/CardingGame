@@ -9,15 +9,12 @@ import Exception.FullHandException;
 
 public class Player {
 	
-	private static final int STARTPOINTS = 30;
+	private static final int STARTPOINTS = 35;
 	
 	private int points;
-	private CardShop shop;
 	private List<Card> deck;
 	private List<Card> handCards;
 	private DeckEnum deckType;
-	private int status;
-	private boolean isTurn;
 	
 	public Player(DeckEnum deckType, List<Card> deck) {
 		

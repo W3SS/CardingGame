@@ -9,7 +9,7 @@ import Exception.InvalidPositionException;
 import Model.*;
 import View.JOptionPaneTools;
 import View.MainWindow;
-import View.Menu;
+//import View.Menu;
 import br.ufsc.inf.leobr.cliente.Jogada;
 import rede.AtorNetGames;
 
@@ -17,7 +17,7 @@ public final class Game {
 
 	private Field field;
 	private MainWindow mainWindow;
-	private Menu menu;
+//	private Menu menu;
 	private int lastPositionClick[];
 	private GameState state;
 	private AtorNetGames netGames;

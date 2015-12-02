@@ -1,5 +1,6 @@
 package View;
 
+import Model.Battle;
 import Model.Card;
 import Model.DeckEnum;
 import Model.Field;
@@ -7,6 +8,9 @@ import Model.Field;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import Control.Game;
@@ -32,11 +36,13 @@ public class MainWindow extends JFrame {
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
 	private int player1Life, player2Life;
-	private JPanel panelGameWindow, panelTopBar, panelCards, panelSideBar;
+	private JPanel panelGameWindow, panelTopBar, panelCards, panelRightBar;
 	private JButton btnC2[], btnC1[], btnH[], btnEP, btnET;
 	private JLabel LblPoints;
 	private JTextPane txtpnOQueFazer;
 	private ImageIcon imgH[], imgC1[], imgC2[];
+	private JTextArea battles;
+	private JScrollPane panelLeftBar;
 	private ImageIcon imgET = new ImageIcon("database/img/ENC_TURNO.png");
 	private ImageIcon imgEP = new ImageIcon("database/img/ENC_PARTIDA.png");
 	int[] lastClickPos;
@@ -165,27 +171,38 @@ super.setResizable(false);
 		
 	}
 	
-	private void constructSideBar() {
-		this.panelSideBar = new JPanel();
-		this.panelSideBar.setBackground(Color.BLACK);
-		this.panelGameWindow.add(this.panelSideBar, BorderLayout.EAST);
-		panelSideBar.setLayout(new GridLayout(3, 1, 0, 0));
+	private void constructLeftBar() {
+		this.battles = new JTextArea();
+		this.battles.setEditable(true);
+		this.battles.setForeground(Color.WHITE);
+		this.battles.setBackground(Color.DARK_GRAY);
+		this.panelLeftBar = new JScrollPane(battles);
+		this.panelLeftBar.setPreferredSize(new Dimension(215, 630));
+		this.panelLeftBar.setBackground(Color.BLACK);
+		panelGameWindow.add(this.panelLeftBar, BorderLayout.WEST);
+	}
+	
+	private void constructRightBar() {
+		this.panelRightBar = new JPanel();
+		this.panelRightBar.setBackground(Color.BLACK);
+		this.panelGameWindow.add(this.panelRightBar, BorderLayout.EAST);
+		panelRightBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		
 		this.txtpnOQueFazer = new JTextPane();
 		this.txtpnOQueFazer.setBackground(Color.DARK_GRAY);
 		this.txtpnOQueFazer.setForeground(Color.WHITE);
 		this.txtpnOQueFazer.setEditable(false);
-		this.panelSideBar.add(this.txtpnOQueFazer);
+		this.panelRightBar.add(this.txtpnOQueFazer);
 		
 		this.btnET = new JButton(this.imgET);
 		this.btnET.setPreferredSize(new Dimension(120, 210));
-		this.panelSideBar.add(this.btnET);
+		this.panelRightBar.add(this.btnET);
 		this.createListenerEncTurno(this.btnET);
 		
 		this.btnEP = new JButton(this.imgEP);
 		this.btnEP.setPreferredSize(new Dimension(120, 210));
-		this.panelSideBar.add(this.btnEP);
+		this.panelRightBar.add(this.btnEP);
 		this.createListenerEncPartida(this.btnEP);
 
 	}
@@ -212,7 +229,9 @@ super.setResizable(false);
 		
 		this.constructTopBar();
 		
-		this.constructSideBar();
+		this.constructRightBar();
+		
+		this.constructLeftBar();
 		
 		super.pack();
 		
@@ -227,8 +246,8 @@ super.setResizable(false);
 			this.panelCards.repaint();
 		else 
 		
-		if (this.panelSideBar != null)
-			this.panelSideBar.repaint();
+		if (this.panelRightBar != null)
+			this.panelRightBar.repaint();
 		else
 		
 		if (this.panelTopBar != null)
@@ -321,7 +340,22 @@ super.setResizable(false);
 		updateCardsId(field);
 		loadImages();
 		updateCardButtons();
+		updateBattles(field);
 		updatePoints();
+		
+	}
+	
+	private void updateBattles(Field field) {
+		String battles = "BATALHAS: \n\n";
+		
+		for (Battle battle : field.getBattles()) {
+			battles += battle.getReport() + "\n\n";
+		}
+		
+		this.battles.setText(battles);
+		
+		JScrollBar vertical = this.panelLeftBar.getVerticalScrollBar();
+		vertical.setValue(vertical.getMaximum());
 		
 	}
 	
