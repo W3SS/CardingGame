@@ -1,8 +1,9 @@
 package Model;
 
+import java.io.Serializable;
 import java.lang.Math;
 
-public class Battle {
+public class Battle implements Serializable {
 	
 	protected Card winner;
 	protected Card loser;
@@ -26,9 +27,14 @@ public class Battle {
 		
 		this.damage = Math.abs(card1.getAttack() - card2.getDefense());
 		
-		this.report = "Winner: " + this.winner.getName() + 
-				"\nLoser: " + this.loser.getName() + 
-				"\nDamage: " + this.damage;
+		if (damage != 0) {
+			this.report = "Vencedor: "; 
+		} else {
+			this.report = "Perdedor: ";
+		}
+		this.report += this.winner.getName() + 
+				"\nPerdedor: " + this.loser.getName() + 
+				"\nDano: " + this.damage;
 		
 	}
 	

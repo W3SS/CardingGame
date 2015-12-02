@@ -10,7 +10,7 @@ public class Card implements Serializable {
 	private int attack;
 	private int defense;
 	private DeckEnum deckType;
-	private int status;
+//	private int status;
 	
 	/** Create the card and a fake effect with 0/0 buff.
 	 * 
@@ -27,7 +27,7 @@ public class Card implements Serializable {
 		this.attack = attack;
 		this.defense = defense;
 		this.deckType = deckType;
-		this.setStatus(0);
+//		this.setStatus(0);
 		
 	}
 
@@ -80,10 +80,10 @@ public class Card implements Serializable {
 	 * 
 	 * @param The card status
  	*/
-	public void setStatus(int status) {
-
-		this.status = status;
-		
-	}
+//	public void setStatus(int status) {
+//
+//		this.status = status;
+//		
+//	}
 	
 }

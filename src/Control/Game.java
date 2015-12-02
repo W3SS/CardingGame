@@ -1,12 +1,7 @@
 package Control;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-
-import javax.swing.JOptionPane;
 
 import Exception.EmptyDeckException;
 import Exception.FullHandException;
@@ -18,7 +13,7 @@ import View.Menu;
 import br.ufsc.inf.leobr.cliente.Jogada;
 import rede.AtorNetGames;
 
-public class Game {
+public final class Game {
 
 	private Field field;
 	private MainWindow mainWindow;
@@ -29,6 +24,13 @@ public class Game {
 	private int whoStart;
 	private DeckEnum decktype;
 	private StartMessage startMessage;
+	private boolean isConnected;
+	
+	public static void main(String[] args) {
+		boolean saiu = false;
+		Game game = new Game();
+		game.showMenu();
+	}
 	
 	public Game() {
 		
@@ -37,43 +39,57 @@ public class Game {
 		this.lastPositionClick = new int[2];
 		this.whoStart = new Random().nextInt(1000);
 		this.state = GameState.INICIANDO_PARTIDA;
+		this.isConnected = false;
 		//this.decktype = DeckEnum.DC;
 		
 	}
 	
-	public static void main(String[] args) {
-		boolean saiu = false;
-		boolean connected = false;
-		Game game = new Game();
-
-//		while (!saiu) {
-
-			if (!connected) {
-				int connect = JOptionPaneTools.askOption("", new String[] {"Conectar", "Sair"});
-				if (connect == 0) {
-					connected = game.connect();
-				} else if (connect == 1) {
-					saiu = true;
-				}
-//				continue;
+	private void showMenu() {
+		if (!this.isConnected) {
+			showConnectMenu();
+		} else {
+			showStartMenu();
+		}
+	}
+	
+	public void setState(GameState state) {
+		this.state = state;
+		this.mainWindow.updateSideBar();;
+	}
+	
+	private void showConnectMenu() {
+		int connect = JOptionPaneTools.askOption("", new String[] {"Conectar", "Sair"});
+		if (connect == 0) {
+			this.isConnected = this.connect();
+			if (!this.isConnected) {
+				JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
 			}
-				int start = JOptionPaneTools.askOption("", new String[] {"Iniciar", "Desonectar"});
-				if (start == 0) {
-					game.startMatch();
-					
-				} else if (start == 1) {
-					//disconnect!!!
-					connected = false;
-				}
-//		}
+		} else if (connect == 1) {
+			return;
+		}
+		this.showMenu();
+	}
+	
+	private void showStartMenu() {
+		int start = JOptionPaneTools.askOption("", new String[] {"Iniciar", "Desconectar"});
+		if (start == 0) {
+			this.startMatch();
+		} else if (start == 1) {
+			this.netGames.desconectar();
+			this.showMenu();
+		}
 	}
 
+	public void setNotConnected() {
+		JOptionPaneTools.message("NetGames Desconectado", "");
+		this.isConnected = false;
+	}
 	
 	public void handClick(int[] position) {
 //		System.out.println(position[1]);
 		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
 			this.lastPositionClick = position;
-			this.state = GameState.JG_ESCOLHER_CARTA_CAMPO1;
+			setState(GameState.JG_ESCOLHER_CARTA_CAMPO1);
 		}
 		
 	}
@@ -82,14 +98,14 @@ public class Game {
 		
 		if (this.state == GameState.JG_ESCOLHER_CARTA_CAMPO1) {
 			if (this.field.validAddPosition(position)) {
-				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO1;
+				setState(GameState.AO_ESCOLHER_CARTA_CAMPO1);
 				this.selectHand(this.lastPositionClick, position);
 			}
 		}
 		else if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO1) {
 			if (this.field.getCardOnPosition(position) != null) {
 				this.lastPositionClick = position;
-				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO2;
+				this.setState(GameState.AO_ESCOLHER_CARTA_CAMPO2);
 //				System.out.println("ESCOLHER C1 " + position[1]);
 			}
 		}
@@ -100,7 +116,7 @@ public class Game {
 		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2)
 			if (this.field.getCardOnPosition(position) != null 	) {
 //				System.out.println("ESCOLHER C2 " + position[1]);
-				this.state = GameState.AO_ESCOLHER_CARTA_CAMPO1;
+				this.setState(GameState.AO_ESCOLHER_CARTA_CAMPO1);
 				this.attackOpponent(this.lastPositionClick, position);
 			}
 			
@@ -109,13 +125,42 @@ public class Game {
 	public void clickEndTurn() {
 		
 		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO1 || this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2) {
-			this.state = GameState.RECEBER_JOGADA;
+			this.setState(GameState.RECEBER_JOGADA);
 			this.endTurn();
 		}
 	}
 	
 	public boolean connect() {
-		return netGames.conectar("jogador", "localhost");
+		Random rand = new Random();
+		String playerId = rand.nextInt()+"";
+		String defaultValue = "localhost";
+		String host = JOptionPaneTools.askString("Insira o host do servidor:", defaultValue);
+		return netGames.conectar(playerId, host);
+	}
+	
+	public void finalizeMatch(int status) {
+		String message;
+		switch(status) {
+			case 1:
+				message = "A partida foi encerrada por um jogador.";
+				break;
+			default:
+				message = "Partida encerrada.";
+		}
+//		enviar novo tipo de mensagem (encerrar parrtida) via netgames
+		this.endMatch();
+		//this.netGames.finalizarPartidaComErro(message);
+	}
+	
+	public GameState getState() {
+		return state;
+	}
+
+	public void endMatch() {
+		//TODO
+		this.mainWindow.setVisible(false);
+		this.mainWindow = new MainWindow(this);
+		this.showMenu();
 	}
 	
 	public void startMatch() {
@@ -125,15 +170,13 @@ public class Game {
 		
 	}
 	
-	
-	
 	public void startNewMatch(int order) {
 		
 		if (order == 1) {
-			this.state = GameState.JG_ESCOLHER_CARTA_MAO;
+			this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
 			this.decktype = DeckEnum.DC;
 		} else {
-			this.state = GameState.RECEBER_JOGADA;
+			this.setState(GameState.RECEBER_JOGADA);
 			this.decktype = DeckEnum.MARVEL;
 		}
 		
@@ -201,20 +244,9 @@ public class Game {
 		// TODO Auto-generated method stub
 		Move move = new Move();
 		move.setBattles(this.field.getBattles());
-		List<Card> listCardsOn1 = new ArrayList<Card>();
-		for (Map.Entry<Integer, Card> actualEntry : this.field.getCardsOn1().entrySet()) {
-			if (actualEntry.getKey() < 5) {
-				listCardsOn1.add(actualEntry.getValue());
-			}
-		}
-		move.setCardsOn1(listCardsOn1);
-		List<Card> listCardsOn2 = new ArrayList<Card>();
-		for (Map.Entry<Integer, Card> actualEntry : this.field.getCardsOn1().entrySet()) {
-			if (actualEntry.getKey() < 5) {
-				listCardsOn2.add(actualEntry.getValue());
-			}
-		}
-		move.setCardsOn2(listCardsOn2);
+		move.setCardsOn1(this.field.getCardsOn1());
+		move.setCardsOn2(this.field.getCardsOn2());
+		move.setPoints(this.field.getPoints());
 		this.netGames.enviarJogada(move);
 	}
 	
@@ -225,13 +257,19 @@ public class Game {
 				Move move = (Move) jogada;
 				move.invertData();
 				this.field.parseMove(move);
-				this.state = GameState.JG_ESCOLHER_CARTA_MAO;
-				try {
-					this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());
-				} catch (FullHandException | EmptyDeckException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
+				System.out.println(this.field.getPlayer1Hand().size());
+				if (this.field.getPlayer1Hand().size() < 5) {
+					System.out.println("HUE\nassas");
+					try {
+						System.out.println(this.field.getPlayer1().popDeck().getName());
+						this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());
+					} catch (FullHandException | EmptyDeckException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
 				}
+				System.out.println("BABA");
 				this.mainWindow.showNewField(this.field);
 			}
 		}

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Control.*;
+import View.JOptionPaneTools;
 
 /**
  *
@@ -57,6 +58,7 @@ public class AtorNetGames implements OuvidorProxy{
     public void desconectar() {
         try {
             proxy.desconectar();
+            game.setNotConnected();
         } catch (NaoConectadoException ex) {
            // game.exibeMensagem(ex.getMessage());
         }
@@ -108,8 +110,8 @@ public class AtorNetGames implements OuvidorProxy{
 
     @Override
     public void finalizarPartidaComErro(String message) {
-       //game.exibeMensagem(message);
-      // game.limparTodosCampos();
+    	JOptionPaneTools.message(message, "Partida encerrada com erro");
+    	game.endMatch();
     }
 
     @Override

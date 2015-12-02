@@ -4,6 +4,7 @@
 package Model;
 
 import Exception.InvalidPositionException;
+import View.JOptionPaneTools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,16 +141,21 @@ public class Field {
 	
 	public void parseMove(Move move) {
 		
+		int lastBattleBefore = this.battles.size()-1;
+	
 		this.setPoints(move.getPoints());
-		List<Card> cardsMove1 = move.getCardsOn1();
-		for (int i=0; i<5; i++) {
-			this.cardsOn1.put(i, cardsMove1.get(i));
-		}
-		List<Card> cardsMove2 = move.getCardsOn2();
-		for (int i=0; i<5; i++) {
-			this.cardsOn2.put(i, cardsMove2.get(i));
-		}
+		this.cardsOn1 = move.getCardsOn1();
+		this.cardsOn2 = move.getCardsOn2();
 		this.setBattles(move.getBattles());
+		
+		int k = 0;
+		for (Battle battle : this.battles) {
+			if (k >lastBattleBefore) {
+				JOptionPaneTools.message(battle.getReport(), "Batalha");
+			}
+			k++;
+		}
+		
 		
 	}
 	
@@ -180,6 +186,7 @@ public class Field {
 
 	public void addBattle(Battle battle) {
 		this.battles.add(battle);
+		JOptionPaneTools.message(battle.getReport(), "Batalha");
 	}
 	
 	public void addCamp2(Card card, int position[]) {

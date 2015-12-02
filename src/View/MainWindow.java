@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Control.Game;
+import Control.GameState;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,9 +34,8 @@ public class MainWindow extends JFrame {
 	private int player1Life, player2Life;
 	private JPanel panelGameWindow, panelTopBar, panelCards, panelSideBar;
 	private JButton btnC20, btnC21, btnC22, btnC23, btnC24, btnC10, btnC11, btnC12, btnC13, btnC14, 
-			btnH0, btnH1, btnH2, btnH3, btnH4, btnEncerrarPartida, btnNewButton;
-	private JLabel LblPoints1, lblYourLife , label, lblInimigoPontos, lblEnemyLife, label_1, lblVezPlayer,
-			lblNewLabel;
+			btnH0, btnH1, btnH2, btnH3, btnH4, btnEP, btnET;
+	private JLabel LblPoints;
 	private JTextPane txtpnOQueFazer;
 	private ImageIcon imgH0, imgH1, imgH2, imgH3, imgH4, imgC10, imgC11, imgC12, imgC13, imgC14, imgC20,
 			imgC21, imgC22, imgC23, imgC24;
@@ -47,8 +47,8 @@ public class MainWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MainWindow(Game game) {
-		setResizable(false);
+	public MainWindow(final Game game) {
+//		setResizable(false);
 		this.game = game;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 10, 200, 200);
@@ -57,7 +57,12 @@ public class MainWindow extends JFrame {
 		panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
 		panelGameWindow.setLayout(new BorderLayout(0, 0));
 		setContentPane(panelGameWindow);
-		
+		setTitle("Marvel vs. DC");		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                game.finalizeMatch(1);
+            }
+        });
 	}
 	
 	private void loadImages() {
@@ -150,7 +155,7 @@ public class MainWindow extends JFrame {
 		this.createListenerCamp2(btnC24, 4);
 	}
 	
-	private void buildTopBar() {
+	private void updateTopBar() {
 		
 		if (panelTopBar != null) {
 			panelGameWindow.remove(panelTopBar);
@@ -160,37 +165,13 @@ public class MainWindow extends JFrame {
 		panelTopBar.setBackground(Color.LIGHT_GRAY);
 		panelGameWindow.add(panelTopBar, BorderLayout.NORTH);
 		
-		LblPoints1 = new JLabel("PONTUAÇÃO:    Você:");
-		panelTopBar.add(LblPoints1);
-		
-		lblYourLife = new JLabel(this.player1Life + "");
-		panelTopBar.add(lblYourLife);
-		
-		lblInimigoPontos = new JLabel("   Inimigo:");
-		panelTopBar.add(lblInimigoPontos);
-		
-		lblEnemyLife = new JLabel(this.player2Life + "");
-		panelTopBar.add(lblEnemyLife);		
+		LblPoints = new JLabel("PONTUAÇÃO:    Você: " + this.player1Life 
+				+ "    Inimigo: " + this.player2Life);
+		panelTopBar.add(LblPoints);		
 		
 	}
 	
-	public void redraw() {
-		
-		if (panelCards != null)
-			panelGameWindow.remove(panelCards);
-				
-		panelCards = new JPanel();
-		panelCards.setBackground(Color.BLACK);
-		panelGameWindow.add(panelCards, BorderLayout.CENTER);
-		panelCards.setLayout(new GridLayout(3, 5, 0, 0));
-		
-		loadImages();
-		createCardButtons();
-		addCardButons();
-		createListeners();
-		
-		buildTopBar();
-		
+	public void updateSideBar() {
 		if (panelSideBar != null) {
 			panelGameWindow.remove(panelSideBar);
 		}
@@ -201,26 +182,114 @@ public class MainWindow extends JFrame {
 		
 		txtpnOQueFazer = new JTextPane();
 		txtpnOQueFazer.setBackground(Color.DARK_GRAY);
-		txtpnOQueFazer.setText("PŔOXIMO PASSO: \n" + this.getStateDescription());
-		txtpnOQueFazer.setForeground(Color.WHITE);;
+		txtpnOQueFazer.setText("PŔOXIMO PASSO: \n\n" + this.getStateDescription());
+		txtpnOQueFazer.setForeground(Color.WHITE);
 		txtpnOQueFazer.setEditable(false);
 		
-		
 		panelSideBar.add(txtpnOQueFazer);
-		btnNewButton = new JButton(imgET);
-		btnNewButton.setPreferredSize(new Dimension(120, 210));
 		
-		panelSideBar.add(btnNewButton);
-		this.createListenerEncTurno(btnNewButton);
+		btnET = new JButton(imgET);
+		btnET.setPreferredSize(new Dimension(120, 210));
+		panelSideBar.add(btnET);
+		this.createListenerEncTurno(btnET);
 		
-		btnEncerrarPartida = new JButton(imgEP);
-		btnEncerrarPartida.setPreferredSize(new Dimension(120, 210));
-		panelSideBar.add(btnEncerrarPartida);
-		this.pack();
+		btnEP = new JButton(imgEP);
+		btnEP.setPreferredSize(new Dimension(120, 210));
+		panelSideBar.add(btnEP);
+		this.createListenerEncPartida(btnEP);
+
+	}
+	
+	private void reconstructPanelCards() {
+		if (panelCards != null)
+			panelGameWindow.remove(panelCards);
+				
+		panelCards = new JPanel();
+		panelCards.setBackground(Color.BLACK);
+		panelGameWindow.add(panelCards, BorderLayout.CENTER);
+		panelCards.setLayout(new GridLayout(3, 5, 0, 0));
+	}
+	
+	public void redraw() {
+		
+		reconstructPanelCards();
+		
+		loadImages();
+		createCardButtons();
+		addCardButons();
+		createListeners();
+		
+		updateTopBar();
+		
+		updateSideBar();
+		
+		super.pack();
 	}
 	
 	private String getStateDescription() {
-		return "iubjknsifkfai";
+		GameState state = game.getState();
+		String description;
+		switch (state) {
+			
+			case INICIANDO_PARTIDA:
+				description = "Partida não\n"
+							+ "iniciada.";
+			break;
+			
+			case JG_ESCOLHER_CARTA_MAO:
+				description = "Escolha uma\n"
+						    + "carta da sua\n"
+						    + "mão (3ª linha)\n"
+						    + "para colocar\n"
+						    + "no seu campo.";
+			break;
+			
+			case JG_ESCOLHER_CARTA_CAMPO1:
+				description = "Escolha uma\n"
+							+ "posição no seu\n"
+							+ "campo (2ª linha)\n"
+							+ "para colocar a\n"
+							+ "carta escolhida.";
+			break;
+//			
+			case AO_ESCOLHER_CARTA_CAMPO1:
+				description = "Escolha a carta\n"
+							+ "do seu campo\n"
+							+ "(2ª linha) com\n"
+							+ "a qual você quer\n"
+							+ "atacar seu\n"
+							+ "oponente,\n"
+							+ "ou então clique\n"
+							+ "em encerrar\n"
+							+ "turno para\n"
+							+ "passar a vez.";
+			break;
+
+			case  AO_ESCOLHER_CARTA_CAMPO2:
+				description = "Escolha a carta\n"
+							+ "do campo inimigo\n"
+							+ "(1ª linha) que\n"
+							+ "você quer atacar\n"
+							+ "com a cara\n"
+							+ "escolhida,\n"
+							+ "ou então clique\n"
+							+ "em encerrar\n"
+							+ "turno para\n"
+							+ "passar a vez.";
+				break;
+
+			case RECEBER_JOGADA:
+				description = "Aguarde até que\n"
+							+ "o seu oponente\n"
+							+ "termine a sua\n"
+							+ "rodada.";
+			break;
+			
+			default :
+				description = "Estado inválido.";
+	
+		}
+		return description;
 	}
 	
 	public DeckEnum getChoosenDeck() {
@@ -273,17 +342,6 @@ public class MainWindow extends JFrame {
 		
 	}
 
-	public int[] getSelectedFieldPos() {
-		
-//		btnH0.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				
-//			}
-//		});
-		return null;
-	}
 
 	public int[] getLastClick() {
 		// TODO Auto-generated method stub
@@ -321,7 +379,15 @@ public class MainWindow extends JFrame {
 	public void createListenerEncTurno(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.clickEndTurn();;
+				game.clickEndTurn();
+			}
+		});
+	}
+	
+	public void createListenerEncPartida(JButton button) {
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				game.finalizeMatch(1);
 			}
 		});
 	}

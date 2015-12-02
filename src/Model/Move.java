@@ -1,39 +1,58 @@
 package Model;
 
 import java.util.Map;
-
 import br.ufsc.inf.leobr.cliente.Jogada;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Move implements Jogada {
 
 //	protected Map<Integer, Card> cardsOn1;
 //	protected Map<Integer, Card> cardsOn2;
-	protected List<Card> cardsOn1;
-	protected List<Card> cardsOn2;
+	protected Card[] cardsOn1;
+	protected Card[] cardsOn2;
 	protected List<Battle> battles;
 	protected int points1;
 	protected int points2;
 	
-	public List<Card> getCardsOn1() {
-		return cardsOn1;
+	
+	private Card[] serializeMap(Map<Integer, Card> map) {
+		Card[] array = new Card[5];
+		for (int k = 0; k < 5; k++) {
+			if (map.containsKey(k)) {
+				array[k] = map.get(k); 
+			} else {
+				array[k] = null;
+			}
+		}
+		return array;
 	}
 	
-	public void setCardsOn1(List<Card> cardsOn1) {
-		
-		this.cardsOn1 = cardsOn1;
-		
+	private Map<Integer, Card> deserializeMap(Card[] array) {
+		Map<Integer, Card> map = new HashMap<Integer, Card>(); 
+		for (int k = 0; k < 5; k++) {
+			if (array[k] != null) {
+				map.put(k, array[k]);
+			}
+		}
+		return map;
+	}
+
+	public Map<Integer, Card> getCardsOn1() {
+		return deserializeMap(this.cardsOn1);
 	}
 	
-	public List<Card> getCardsOn2() {
-		return cardsOn2;
+	public void setCardsOn1(Map<Integer, Card> cardsOn1) {
+		this.cardsOn1 = serializeMap(cardsOn1);		
 	}
 	
-	public void setCardsOn2(List<Card> cardsOn1) {
-		
-		this.cardsOn2 = cardsOn2;	
+	public Map<Integer, Card> getCardsOn2() {
+		return deserializeMap(this.cardsOn2);
+	}
+	
+	public void setCardsOn2(Map<Integer, Card> cardsOn2) {
+		this.cardsOn2 = serializeMap(cardsOn2);	
 	}
 	
 	public List<Battle> getBattles() {
@@ -57,7 +76,7 @@ public class Move implements Jogada {
 	}
 	
 	public void invertData() {
-		List<Card> tempCards;
+		Card[] tempCards;
 		int tempPoints;
 		tempCards = this.cardsOn1;
 		this.cardsOn1 = this.cardsOn2;

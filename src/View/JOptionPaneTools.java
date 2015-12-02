@@ -9,8 +9,8 @@ public final class JOptionPaneTools {
 		askOption("", new String[] {"Iniciar Partida", "Desconectar"});
 	}
 
-	public static String askString(String text){
-		return JOptionPane.showInputDialog(null, text, null);
+	public static String askString(String text, String defaultValue){
+		return JOptionPane.showInputDialog(null, text, defaultValue);
 	}
 	
 	public static void message(String text, String title){
