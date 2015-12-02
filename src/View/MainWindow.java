@@ -1,5 +1,6 @@
 package View;
 
+import Model.Battle;
 import Model.Card;
 import Model.DeckEnum;
 import Model.Field;
@@ -7,6 +8,9 @@ import Model.Field;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import Control.Game;
@@ -21,6 +25,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
@@ -32,11 +37,13 @@ public class MainWindow extends JFrame {
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
 	private int player1Life, player2Life;
-	private JPanel panelGameWindow, panelTopBar, panelCards, panelSideBar;
+	private JPanel panelGameWindow, panelTopBar, panelCards, panelRightBar, panelStart;
 	private JButton btnC2[], btnC1[], btnH[], btnEP, btnET;
 	private JLabel LblPoints;
 	private JTextPane txtpnOQueFazer;
 	private ImageIcon imgH[], imgC1[], imgC2[];
+	private JTextArea battles;
+	private JScrollPane panelLeftBar;
 	private ImageIcon imgET = new ImageIcon("database/img/ENC_TURNO.png");
 	private ImageIcon imgEP = new ImageIcon("database/img/ENC_PARTIDA.png");
 	int[] lastClickPos;
@@ -46,22 +53,91 @@ public class MainWindow extends JFrame {
 	
 	public MainWindow(final Game game) {
 	
-super.setResizable(false);
+		super.setResizable(false);
+		super.setVisible(true);
 		this.game = game;
 		super.setTitle("Marvel vs. DC");		
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setBounds(100, 10, 200, 200);
-		this.panelGameWindow = new JPanel();
-		this.panelGameWindow.setBackground(Color.BLACK);
-		this.panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
-		this.panelGameWindow.setLayout(new BorderLayout(0, 0));
-		super.setContentPane(this.panelGameWindow);
-		super.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                game.finalizeMatch(1);
-            }
-        });
-//		this.setVisible(true);
+		
+		super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+	}
+	
+	public void showStartScreen(boolean connected) {
+		System.out.println("yubinoklbiluhoil");
+		super.setVisible(false);
+		this.panelStart = new JPanel();
+		ImageIcon backgroung = new ImageIcon("database/img/TITLE.png");
+		panelStart.setLayout(null);
+		JLabel background = new JLabel();
+		System.out.println("yubinoklbiluhoil");
+		background.setBounds(0, 0, 769, 408);
+		background.setIcon(backgroung);
+		panelStart.setBackground(Color.BLACK);
+		super.setBounds(super.getX(), super.getY(), 769, 408);;
+		System.out.println("yubinoklbiluhoil");
+		
+		if (!connected) {
+			System.out.println("if");
+			
+			JButton btnConectar = new JButton("Conectar");
+			btnConectar.setBounds(280, 196, 98, 25);
+			panelStart.add(btnConectar);
+			
+			btnConectar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String host = JOptionPaneTools.askString("Insira o host do servidor:", "localhost");
+					game.connect(host);
+				}
+			});
+			
+			
+			JButton btnSair = new JButton("Sair");
+			btnSair.setBounds(400, 196, 62, 25);
+			panelStart.add(btnSair);
+			
+			btnSair.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+				}
+			});
+
+		} else {
+			System.out.println("else");
+			
+			JButton btnIniciar = new JButton("Iniciar");
+			btnIniciar.setBounds(280, 196, 78, 25);
+			panelStart.add(btnIniciar);
+			
+			btnIniciar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					game.startMatch();;
+				}
+			});
+			
+
+			JButton btnDesconectar = new JButton("Desconectar");
+			btnDesconectar.setBounds(380, 196, 125, 25);
+			panelStart.add(btnDesconectar);
+			
+			btnDesconectar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					game.disconnect();
+					game.showStartScreen();
+				}
+			});
+			
+		}
+		System.out.println("END");
+		
+
+		panelStart.add(background);
+		panelStart.repaint();
+		super.setContentPane(panelStart);
+		super.setVisible(true);
+		super.repaint();
+		
 	}
 	
 	private void loadImages() {
@@ -165,27 +241,38 @@ super.setResizable(false);
 		
 	}
 	
-	private void constructSideBar() {
-		this.panelSideBar = new JPanel();
-		this.panelSideBar.setBackground(Color.BLACK);
-		this.panelGameWindow.add(this.panelSideBar, BorderLayout.EAST);
-		panelSideBar.setLayout(new GridLayout(3, 1, 0, 0));
+	private void constructLeftBar() {
+		this.battles = new JTextArea();
+		this.battles.setEditable(true);
+		this.battles.setForeground(Color.WHITE);
+		this.battles.setBackground(Color.DARK_GRAY);
+		this.panelLeftBar = new JScrollPane(battles);
+		this.panelLeftBar.setPreferredSize(new Dimension(215, 630));
+		this.panelLeftBar.setBackground(Color.BLACK);
+		panelGameWindow.add(this.panelLeftBar, BorderLayout.WEST);
+	}
+	
+	private void constructRightBar() {
+		this.panelRightBar = new JPanel();
+		this.panelRightBar.setBackground(Color.BLACK);
+		this.panelGameWindow.add(this.panelRightBar, BorderLayout.EAST);
+		panelRightBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		
 		this.txtpnOQueFazer = new JTextPane();
 		this.txtpnOQueFazer.setBackground(Color.DARK_GRAY);
 		this.txtpnOQueFazer.setForeground(Color.WHITE);
 		this.txtpnOQueFazer.setEditable(false);
-		this.panelSideBar.add(this.txtpnOQueFazer);
+		this.panelRightBar.add(this.txtpnOQueFazer);
 		
 		this.btnET = new JButton(this.imgET);
 		this.btnET.setPreferredSize(new Dimension(120, 210));
-		this.panelSideBar.add(this.btnET);
+		this.panelRightBar.add(this.btnET);
 		this.createListenerEncTurno(this.btnET);
 		
 		this.btnEP = new JButton(this.imgEP);
 		this.btnEP.setPreferredSize(new Dimension(120, 210));
-		this.panelSideBar.add(this.btnEP);
+		this.panelRightBar.add(this.btnEP);
 		this.createListenerEncPartida(this.btnEP);
 
 	}
@@ -200,7 +287,13 @@ super.setResizable(false);
 	}
 	
 	public void draw(Field field) {
-				
+		
+		this.setVisible(false);
+		this.panelGameWindow = new JPanel();
+		this.panelGameWindow.setBackground(Color.BLACK);
+		this.panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.panelGameWindow.setLayout(new BorderLayout(0, 0));
+		
 		
 		this.constructPanelCards();
 		
@@ -212,13 +305,20 @@ super.setResizable(false);
 		
 		this.constructTopBar();
 		
-		this.constructSideBar();
+		this.constructRightBar();
 		
-		super.pack();
+		this.constructLeftBar();
+		
 		
 		this.updateGuiVariables(field);
 		
 		this.repaint();
+		
+		super.setContentPane(this.panelGameWindow);
+		this.setVisible(true);
+		super.repaint();
+		super.pack();
+		
 	}
 	
 	public void repaint() {
@@ -227,8 +327,8 @@ super.setResizable(false);
 			this.panelCards.repaint();
 		else 
 		
-		if (this.panelSideBar != null)
-			this.panelSideBar.repaint();
+		if (this.panelRightBar != null)
+			this.panelRightBar.repaint();
 		else
 		
 		if (this.panelTopBar != null)
@@ -321,7 +421,22 @@ super.setResizable(false);
 		updateCardsId(field);
 		loadImages();
 		updateCardButtons();
+		updateBattles(field);
 		updatePoints();
+		
+	}
+	
+	private void updateBattles(Field field) {
+		String battles = "BATALHAS: \n\n";
+		
+		for (Battle battle : field.getBattles()) {
+			battles += battle.getReport() + "\n\n";
+		}
+		
+		this.battles.setText(battles);
+		
+		JScrollBar vertical = this.panelLeftBar.getVerticalScrollBar();
+		vertical.setValue(vertical.getMaximum());
 		
 	}
 	

@@ -152,15 +152,6 @@ public class Field {
 		this.cardsOn2 = move.getCardsOn2();
 		this.setBattles(move.getBattles());
 		
-		int k = 0;
-		for (Battle battle : this.battles) {
-			if (k >lastBattleBefore) {
-				JOptionPaneTools.message(battle.getReport(), "Batalha");
-			}
-			k++;
-		}
-		
-		
 	}
 	
 	private void setBattles(List<Battle> battles) {
@@ -190,7 +181,6 @@ public class Field {
 
 	public void addBattle(Battle battle) {
 		this.battles.add(battle);
-		JOptionPaneTools.message(battle.getReport(), "Batalha");
 	}
 	
 	public void addCamp2(Card card, int position[]) {

@@ -9,7 +9,7 @@ import Exception.InvalidPositionException;
 import Model.*;
 import View.JOptionPaneTools;
 import View.MainWindow;
-import View.Menu;
+//import View.Menu;
 import br.ufsc.inf.leobr.cliente.Jogada;
 import rede.AtorNetGames;
 
@@ -17,7 +17,7 @@ public final class Game {
 
 	private Field field;
 	private MainWindow mainWindow;
-	private Menu menu;
+//	private Menu menu;
 	private int lastPositionClick[];
 	private GameState state;
 	private AtorNetGames netGames;
@@ -26,26 +26,23 @@ public final class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.showMenu();
 	}
 	
 	public Game() {
-		
 		this.mainWindow = new MainWindow(this);
 		this.netGames = new AtorNetGames(this);
 		this.lastPositionClick = new int[2];
 		this.state = GameState.INICIANDO_PARTIDA;
 		this.isConnected = false;
-		//this.decktype = DeckEnum.DC;
-		
+		this.showStartScreen();
 	}
 	
-	private void showMenu() {
-		if (!this.isConnected) {
-			showConnectMenu();
-		} else {
-			showStartMenu();
-		}
+	public void showStartScreen() {
+		this.mainWindow.showStartScreen(this.isConnected);
+	}
+	
+	public void disconnect() {
+		this.netGames.desconectar();
 	}
 	
 	public void setState(GameState state) {
@@ -53,29 +50,7 @@ public final class Game {
 		this.mainWindow.setState(state);
 	}
 	
-	private void showConnectMenu() {
-		int connect = JOptionPaneTools.askOption("", new String[] {"Conectar", "Sair"});
-		if (connect == 0) {
-			this.isConnected = this.connect();
-			if (!this.isConnected) {
-				JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
-			}
-		} else if (connect == 1) {
-			return;
-		}
-		this.showMenu();
-	}
 	
-	private void showStartMenu() {
-		int start = JOptionPaneTools.askOption("", new String[] {"Iniciar", "Desconectar"});
-		if (start == 0) {
-			this.startMatch();
-		} else if (start == 1) {
-			this.netGames.desconectar();
-			this.showMenu();
-		}
-	}
-
 	public void setNotConnected() {
 		JOptionPaneTools.message("NetGames Desconectado", "");
 		this.isConnected = false;
@@ -128,12 +103,14 @@ public final class Game {
 		}
 	}
 	
-	public boolean connect() {
+	public void connect(String host) {
 		Random rand = new Random();
 		String playerId = rand.nextInt()+"";
-		String defaultValue = "localhost";
-		String host = JOptionPaneTools.askString("Insira o host do servidor:", defaultValue);
-		return netGames.conectar(playerId, host);
+		this.isConnected = netGames.conectar(playerId, host);
+		if (!this.isConnected) {
+			JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
+		}
+		this.mainWindow.showStartScreen(this.isConnected);
 	}
 	
 	public void finalizeMatch(int status) {
@@ -158,7 +135,7 @@ public final class Game {
 		//TODO
 		this.mainWindow.setVisible(false);
 		this.mainWindow = new MainWindow(this);
-		this.showMenu();
+		this.mainWindow.showStartScreen(this.isConnected);;
 	}
 	
 	public void startMatch() {
@@ -200,7 +177,6 @@ public final class Game {
 			System.out.println(card.getId());
 		}
 		
-		mainWindow.setVisible(true);
 		mainWindow.draw(this.field);
 		
 	}
@@ -253,6 +229,11 @@ public final class Game {
 		System.out.println("ENVIADO");
 	}
 	
+	private void checkPoints(int[] points) {
+		if (points[0] <=0 || points[1] <=0)
+			this.endMatch();
+	}
+	
 	public void receiveMove(Jogada jogada) {
 		System.out.println("RECEBEU");
 		if (this.state == GameState.RECEBER_JOGADA) {
@@ -260,6 +241,7 @@ public final class Game {
 				Move move = (Move) jogada;
 				move.invertData();
 				this.field.parseMove(move);
+				checkPoints(this.field.getPoints());
 				this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
 				System.out.println(this.field.getPlayer1Hand().size());
 				if (this.field.getPlayer1Hand().size() < 5) {
