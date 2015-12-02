@@ -21,13 +21,10 @@ public final class Game {
 	private int lastPositionClick[];
 	private GameState state;
 	private AtorNetGames netGames;
-	private int whoStart;
 	private DeckEnum decktype;
-	private StartMessage startMessage;
 	private boolean isConnected;
 	
 	public static void main(String[] args) {
-		boolean saiu = false;
 		Game game = new Game();
 		game.showMenu();
 	}
@@ -37,7 +34,6 @@ public final class Game {
 		this.mainWindow = new MainWindow(this);
 		this.netGames = new AtorNetGames(this);
 		this.lastPositionClick = new int[2];
-		this.whoStart = new Random().nextInt(1000);
 		this.state = GameState.INICIANDO_PARTIDA;
 		this.isConnected = false;
 		//this.decktype = DeckEnum.DC;
@@ -185,8 +181,8 @@ public final class Game {
 		CardShop cardShop = new CardShop();
 		List<Card> deck = cardShop.getDeck(this.decktype);
 		
-		Player player1 = new Player("Jogador1", this.decktype, deck);
-		Player player2 = new Player("Jogador2", null, null);
+		Player player1 = new Player(this.decktype, deck);
+		Player player2 = new Player(null, null);
 		this.field = new Field(player1, player2);
 
 		Random generator = new Random();
@@ -273,11 +269,7 @@ public final class Game {
 					try {
 //						System.out.println(this.field.getPlayer1().popDeck().getName());
 						this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());
-						this.field.getPlayer1().popDeck();
-						this.field.getPlayer1().popDeck();
-						this.field.getPlayer1().popDeck();
-						this.field.getPlayer1().popDeck();
-						this.field.getPlayer1().popDeck();
+						
 					} catch (FullHandException e) {
 					} catch (EmptyDeckException e) {
 						if (this.field.getPlayer1Hand().isEmpty()) {

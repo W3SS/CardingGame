@@ -8,8 +8,6 @@ import java.util.List;
 
 public class Move implements Jogada {
 
-//	protected Map<Integer, Card> cardsOn1;
-//	protected Map<Integer, Card> cardsOn2;
 	protected Card[] cardsOn1;
 	protected Card[] cardsOn2;
 	protected List<Battle> battles;

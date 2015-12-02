@@ -11,7 +11,6 @@ public class Player {
 	
 	private static final int STARTPOINTS = 30;
 	
-	private String name;
 	private int points;
 	private CardShop shop;
 	private List<Card> deck;
@@ -20,17 +19,12 @@ public class Player {
 	private int status;
 	private boolean isTurn;
 	
-	public Player(String name, DeckEnum deckType, List<Card> deck) {
+	public Player(DeckEnum deckType, List<Card> deck) {
 		
-		this.name = name;
 		this.points = STARTPOINTS;
 		this.deckType = deckType;
 		this.deck = deck;
 		this.handCards = new ArrayList<Card>();
-	}
-	
-	public String getName() {
-		return this.name;
 	}
 	
 	public int getPoints() {
