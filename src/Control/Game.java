@@ -34,19 +34,16 @@ public final class Game {
 		this.lastPositionClick = new int[2];
 		this.state = GameState.INICIANDO_PARTIDA;
 		this.isConnected = false;
-		this.mainWindow.showStartScreen(isConnected);
-		
-		//this.decktype = DeckEnum.DC;
-		
+		this.showStartScreen();
 	}
 	
-//	private void showMenu() {
-//		if (!this.isConnected) {
-//			showConnectMenu();
-//		} else {
-//			showStartMenu();
-//		}
-//	}
+	public void showStartScreen() {
+		this.mainWindow.showStartScreen(this.isConnected);
+	}
+	
+	public void disconnect() {
+		this.netGames.desconectar();
+	}
 	
 	public void setState(GameState state) {
 		this.state = state;
@@ -54,30 +51,6 @@ public final class Game {
 	}
 	
 	
-	
-	private void showConnectMenu() {
-		int connect = JOptionPaneTools.askOption("", new String[] {"Conectar", "Sair"});
-		if (connect == 0) {
-//			this.isConnected = this.connect();
-			if (!this.isConnected) {
-				JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
-			}
-		} else if (connect == 1) {
-			return;
-		}
-//		this.showMenu();
-	}
-	
-	private void showStartMenu() {
-		int start = JOptionPaneTools.askOption("", new String[] {"Iniciar", "Desconectar"});
-		if (start == 0) {
-			this.startMatch();
-		} else if (start == 1) {
-			this.netGames.desconectar();
-//			this.showMenu();
-		}
-	}
-
 	public void setNotConnected() {
 		JOptionPaneTools.message("NetGames Desconectado", "");
 		this.isConnected = false;
@@ -136,9 +109,8 @@ public final class Game {
 		this.isConnected = netGames.conectar(playerId, host);
 		if (!this.isConnected) {
 			JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
-			System.exit(1);
 		}
-		this.mainWindow.showStartScreen(true);
+		this.mainWindow.showStartScreen(this.isConnected);
 	}
 	
 	public void finalizeMatch(int status) {
@@ -205,7 +177,6 @@ public final class Game {
 			System.out.println(card.getId());
 		}
 		
-		mainWindow.setVisible(true);
 		mainWindow.draw(this.field);
 		
 	}

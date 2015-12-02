@@ -37,7 +37,7 @@ public class MainWindow extends JFrame {
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
 	private int player1Life, player2Life;
-	private JPanel panelGame, panelTopBar, panelCards, panelRightBar, panelStart, panelWindow;
+	private JPanel panelGameWindow, panelTopBar, panelCards, panelRightBar, panelStart;
 	private JButton btnC2[], btnC1[], btnH[], btnEP, btnET;
 	private JLabel LblPoints;
 	private JTextPane txtpnOQueFazer;
@@ -54,33 +54,19 @@ public class MainWindow extends JFrame {
 	public MainWindow(final Game game) {
 	
 		super.setResizable(false);
+		super.setVisible(true);
 		this.game = game;
 		super.setTitle("Marvel vs. DC");		
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setBounds(100, 10, 200, 200);
-		this.panelWindow = new JPanel();
-		this.panelWindow.setBackground(Color.RED);
-		this.panelWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
-		this.panelWindow.setLayout(new BorderLayout(0, 0));
-		super.setContentPane(this.panelWindow);
+		
 		super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         
-		super.setVisible(true);
-	}
-	
-	private void clearWindow() {
-		if (this.panelGame != null) {
-			this.panelWindow.remove(panelGame);
-			this.panelGame = null;
-		}
-		if (this.panelStart != null) {
-			this.panelWindow.remove(panelStart);
-			this.panelStart = null;
-		}
 	}
 	
 	public void showStartScreen(boolean connected) {
-		this.clearWindow();
+		System.out.println("yubinoklbiluhoil");
+		super.setVisible(false);
 		this.panelStart = new JPanel();
 		ImageIcon backgroung = new ImageIcon("database/img/TITLE.png");
 		panelStart.setLayout(null);
@@ -123,23 +109,35 @@ public class MainWindow extends JFrame {
 			JButton btnIniciar = new JButton("Iniciar");
 			btnIniciar.setBounds(280, 196, 78, 25);
 			panelStart.add(btnIniciar);
+			
+			btnIniciar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					game.startMatch();;
+				}
+			});
+			
 
 			JButton btnDesconectar = new JButton("Desconectar");
 			btnDesconectar.setBounds(380, 196, 125, 25);
 			panelStart.add(btnDesconectar);
 			
+			btnDesconectar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					game.disconnect();
+					game.showStartScreen();
+				}
+			});
+			
 		}
 		System.out.println("END");
 		
-		panelStart.add(background);
 
-		this.panelWindow.add(this.panelStart, BorderLayout.CENTER);
+		panelStart.add(background);
 		panelStart.repaint();
-		panelWindow.repaint();
-		super.repaint();
-		super.setVisible(false);
+		super.setContentPane(panelStart);
 		super.setVisible(true);
-//		super.pack();
+		super.repaint();
+		
 	}
 	
 	private void loadImages() {
@@ -239,7 +237,7 @@ public class MainWindow extends JFrame {
 		this.panelTopBar.setBackground(Color.LIGHT_GRAY);
 		this.LblPoints = new JLabel();
 		this.panelTopBar.add(this.LblPoints);
-		this.panelGame.add(this.panelTopBar, BorderLayout.NORTH);
+		this.panelGameWindow.add(this.panelTopBar, BorderLayout.NORTH);
 		
 	}
 	
@@ -251,13 +249,13 @@ public class MainWindow extends JFrame {
 		this.panelLeftBar = new JScrollPane(battles);
 		this.panelLeftBar.setPreferredSize(new Dimension(215, 630));
 		this.panelLeftBar.setBackground(Color.BLACK);
-		panelGame.add(this.panelLeftBar, BorderLayout.WEST);
+		panelGameWindow.add(this.panelLeftBar, BorderLayout.WEST);
 	}
 	
 	private void constructRightBar() {
 		this.panelRightBar = new JPanel();
 		this.panelRightBar.setBackground(Color.BLACK);
-		this.panelGame.add(this.panelRightBar, BorderLayout.EAST);
+		this.panelGameWindow.add(this.panelRightBar, BorderLayout.EAST);
 		panelRightBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		
@@ -283,13 +281,19 @@ public class MainWindow extends JFrame {
 		
 		this.panelCards = new JPanel();
 		this.panelCards.setBackground(Color.BLACK);
-		this.panelGame.add(this.panelCards, BorderLayout.CENTER);
+		this.panelGameWindow.add(this.panelCards, BorderLayout.CENTER);
 		this.panelCards.setLayout(new GridLayout(3, 5, 0, 0));
 		
 	}
 	
 	public void draw(Field field) {
-				
+		
+		this.setVisible(false);
+		this.panelGameWindow = new JPanel();
+		this.panelGameWindow.setBackground(Color.BLACK);
+		this.panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.panelGameWindow.setLayout(new BorderLayout(0, 0));
+		
 		
 		this.constructPanelCards();
 		
@@ -305,14 +309,16 @@ public class MainWindow extends JFrame {
 		
 		this.constructLeftBar();
 		
-		super.pack();
 		
 		this.updateGuiVariables(field);
 		
 		this.repaint();
 		
-		this.clearWindow();
-		this.panelWindow.add(panelGame, BorderLayout.CENTER);;
+		super.setContentPane(this.panelGameWindow);
+		this.setVisible(true);
+		super.repaint();
+		super.pack();
+		
 	}
 	
 	public void repaint() {
@@ -329,8 +335,8 @@ public class MainWindow extends JFrame {
 			this.panelTopBar.repaint();
 		else
 		
-		if (this.panelGame != null)
-			this.panelGame.repaint();
+		if (this.panelGameWindow != null)
+			this.panelGameWindow.repaint();
 		
 		super.repaint();
 	}
