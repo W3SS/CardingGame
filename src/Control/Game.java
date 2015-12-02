@@ -26,44 +26,46 @@ public final class Game {
 	
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.showMenu();
 	}
 	
 	public Game() {
-		
 		this.mainWindow = new MainWindow(this);
 		this.netGames = new AtorNetGames(this);
 		this.lastPositionClick = new int[2];
 		this.state = GameState.INICIANDO_PARTIDA;
 		this.isConnected = false;
+		this.mainWindow.showStartScreen(isConnected);
+		
 		//this.decktype = DeckEnum.DC;
 		
 	}
 	
-	private void showMenu() {
-		if (!this.isConnected) {
-			showConnectMenu();
-		} else {
-			showStartMenu();
-		}
-	}
+//	private void showMenu() {
+//		if (!this.isConnected) {
+//			showConnectMenu();
+//		} else {
+//			showStartMenu();
+//		}
+//	}
 	
 	public void setState(GameState state) {
 		this.state = state;
 		this.mainWindow.setState(state);
 	}
 	
+	
+	
 	private void showConnectMenu() {
 		int connect = JOptionPaneTools.askOption("", new String[] {"Conectar", "Sair"});
 		if (connect == 0) {
-			this.isConnected = this.connect();
+//			this.isConnected = this.connect();
 			if (!this.isConnected) {
 				JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
 			}
 		} else if (connect == 1) {
 			return;
 		}
-		this.showMenu();
+//		this.showMenu();
 	}
 	
 	private void showStartMenu() {
@@ -72,7 +74,7 @@ public final class Game {
 			this.startMatch();
 		} else if (start == 1) {
 			this.netGames.desconectar();
-			this.showMenu();
+//			this.showMenu();
 		}
 	}
 
@@ -128,12 +130,15 @@ public final class Game {
 		}
 	}
 	
-	public boolean connect() {
+	public void connect(String host) {
 		Random rand = new Random();
 		String playerId = rand.nextInt()+"";
-		String defaultValue = "localhost";
-		String host = JOptionPaneTools.askString("Insira o host do servidor:", defaultValue);
-		return netGames.conectar(playerId, host);
+		this.isConnected = netGames.conectar(playerId, host);
+		if (!this.isConnected) {
+			JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
+			System.exit(1);
+		}
+		this.mainWindow.showStartScreen(true);
 	}
 	
 	public void finalizeMatch(int status) {
@@ -158,7 +163,7 @@ public final class Game {
 		//TODO
 		this.mainWindow.setVisible(false);
 		this.mainWindow = new MainWindow(this);
-		this.showMenu();
+		this.mainWindow.showStartScreen(this.isConnected);;
 	}
 	
 	public void startMatch() {
@@ -253,6 +258,11 @@ public final class Game {
 		System.out.println("ENVIADO");
 	}
 	
+	private void checkPoints(int[] points) {
+		if (points[0] <=0 || points[1] <=0)
+			this.endMatch();
+	}
+	
 	public void receiveMove(Jogada jogada) {
 		System.out.println("RECEBEU");
 		if (this.state == GameState.RECEBER_JOGADA) {
@@ -260,6 +270,7 @@ public final class Game {
 				Move move = (Move) jogada;
 				move.invertData();
 				this.field.parseMove(move);
+				checkPoints(this.field.getPoints());
 				this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
 				System.out.println(this.field.getPlayer1Hand().size());
 				if (this.field.getPlayer1Hand().size() < 5) {

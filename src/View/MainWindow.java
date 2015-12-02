@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
@@ -36,7 +37,7 @@ public class MainWindow extends JFrame {
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
 	private int player1Life, player2Life;
-	private JPanel panelGameWindow, panelTopBar, panelCards, panelRightBar;
+	private JPanel panelGame, panelTopBar, panelCards, panelRightBar, panelStart, panelWindow;
 	private JButton btnC2[], btnC1[], btnH[], btnEP, btnET;
 	private JLabel LblPoints;
 	private JTextPane txtpnOQueFazer;
@@ -52,22 +53,93 @@ public class MainWindow extends JFrame {
 	
 	public MainWindow(final Game game) {
 	
-super.setResizable(false);
+		super.setResizable(false);
 		this.game = game;
 		super.setTitle("Marvel vs. DC");		
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setBounds(100, 10, 200, 200);
-		this.panelGameWindow = new JPanel();
-		this.panelGameWindow.setBackground(Color.BLACK);
-		this.panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
-		this.panelGameWindow.setLayout(new BorderLayout(0, 0));
-		super.setContentPane(this.panelGameWindow);
-		super.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                game.finalizeMatch(1);
-            }
-        });
-//		this.setVisible(true);
+		this.panelWindow = new JPanel();
+		this.panelWindow.setBackground(Color.RED);
+		this.panelWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.panelWindow.setLayout(new BorderLayout(0, 0));
+		super.setContentPane(this.panelWindow);
+		super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
+		super.setVisible(true);
+	}
+	
+	private void clearWindow() {
+		if (this.panelGame != null) {
+			this.panelWindow.remove(panelGame);
+			this.panelGame = null;
+		}
+		if (this.panelStart != null) {
+			this.panelWindow.remove(panelStart);
+			this.panelStart = null;
+		}
+	}
+	
+	public void showStartScreen(boolean connected) {
+		this.clearWindow();
+		this.panelStart = new JPanel();
+		ImageIcon backgroung = new ImageIcon("database/img/TITLE.png");
+		panelStart.setLayout(null);
+		JLabel background = new JLabel();
+		System.out.println("yubinoklbiluhoil");
+		background.setBounds(0, 0, 769, 408);
+		background.setIcon(backgroung);
+		panelStart.setBackground(Color.BLACK);
+		super.setBounds(super.getX(), super.getY(), 769, 408);;
+		System.out.println("yubinoklbiluhoil");
+		
+		if (!connected) {
+			System.out.println("if");
+			
+			JButton btnConectar = new JButton("Conectar");
+			btnConectar.setBounds(280, 196, 98, 25);
+			panelStart.add(btnConectar);
+			
+			btnConectar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String host = JOptionPaneTools.askString("Insira o host do servidor:", "localhost");
+					game.connect(host);
+				}
+			});
+			
+			
+			JButton btnSair = new JButton("Sair");
+			btnSair.setBounds(400, 196, 62, 25);
+			panelStart.add(btnSair);
+			
+			btnSair.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+				}
+			});
+
+		} else {
+			System.out.println("else");
+			
+			JButton btnIniciar = new JButton("Iniciar");
+			btnIniciar.setBounds(280, 196, 78, 25);
+			panelStart.add(btnIniciar);
+
+			JButton btnDesconectar = new JButton("Desconectar");
+			btnDesconectar.setBounds(380, 196, 125, 25);
+			panelStart.add(btnDesconectar);
+			
+		}
+		System.out.println("END");
+		
+		panelStart.add(background);
+
+		this.panelWindow.add(this.panelStart, BorderLayout.CENTER);
+		panelStart.repaint();
+		panelWindow.repaint();
+		super.repaint();
+		super.setVisible(false);
+		super.setVisible(true);
+//		super.pack();
 	}
 	
 	private void loadImages() {
@@ -167,7 +239,7 @@ super.setResizable(false);
 		this.panelTopBar.setBackground(Color.LIGHT_GRAY);
 		this.LblPoints = new JLabel();
 		this.panelTopBar.add(this.LblPoints);
-		this.panelGameWindow.add(this.panelTopBar, BorderLayout.NORTH);
+		this.panelGame.add(this.panelTopBar, BorderLayout.NORTH);
 		
 	}
 	
@@ -179,13 +251,13 @@ super.setResizable(false);
 		this.panelLeftBar = new JScrollPane(battles);
 		this.panelLeftBar.setPreferredSize(new Dimension(215, 630));
 		this.panelLeftBar.setBackground(Color.BLACK);
-		panelGameWindow.add(this.panelLeftBar, BorderLayout.WEST);
+		panelGame.add(this.panelLeftBar, BorderLayout.WEST);
 	}
 	
 	private void constructRightBar() {
 		this.panelRightBar = new JPanel();
 		this.panelRightBar.setBackground(Color.BLACK);
-		this.panelGameWindow.add(this.panelRightBar, BorderLayout.EAST);
+		this.panelGame.add(this.panelRightBar, BorderLayout.EAST);
 		panelRightBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		
@@ -211,7 +283,7 @@ super.setResizable(false);
 		
 		this.panelCards = new JPanel();
 		this.panelCards.setBackground(Color.BLACK);
-		this.panelGameWindow.add(this.panelCards, BorderLayout.CENTER);
+		this.panelGame.add(this.panelCards, BorderLayout.CENTER);
 		this.panelCards.setLayout(new GridLayout(3, 5, 0, 0));
 		
 	}
@@ -238,6 +310,9 @@ super.setResizable(false);
 		this.updateGuiVariables(field);
 		
 		this.repaint();
+		
+		this.clearWindow();
+		this.panelWindow.add(panelGame, BorderLayout.CENTER);;
 	}
 	
 	public void repaint() {
@@ -254,8 +329,8 @@ super.setResizable(false);
 			this.panelTopBar.repaint();
 		else
 		
-		if (this.panelGameWindow != null)
-			this.panelGameWindow.repaint();
+		if (this.panelGame != null)
+			this.panelGame.repaint();
 		
 		super.repaint();
 	}
