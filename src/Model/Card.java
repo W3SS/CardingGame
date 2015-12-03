@@ -20,68 +20,46 @@ public class Card implements Serializable {
  	 * @param The type of the deck to which the card belongs to
 */
 	public Card(String name, int id, int attack, int defense, DeckEnum deckType) {
-		
 		this.name = name;
 		this.id = id;
 		this.attack = attack;
 		this.defense = defense;
 		this.deckType = deckType;
-		
 	}
 
 	/** 
 	 * @return Card name.
 	 */
 	public String getName() {
-		
 		return this.name;
-		
 	}
 	
 	/** 
 	 * @return Card ID.
 	 */
 	public int getId() {
-		
 		return this.id;
-		
 	}
 
 	/** 
 	 * @return Card attack number.
 	 */
 	public int getAttack() {
-
 		return this.attack;
-		
 	}
 
 	/**
 	 * @return Card defense number
 	 */
 	public int getDefense() {
-
 		return this.defense;
-		
 	}
 	
 	/**
 	 * @return Type of the deck of the card.
 	 */
 	public DeckEnum getDeckType() {
-
 		return this.deckType;
-		
 	}
-	
-	/** Set a new status to the card
-	 * 
-	 * @param The card status
- 	*/
-//	public void setStatus(int status) {
-//
-//		this.status = status;
-//		
-//	}
 	
 }

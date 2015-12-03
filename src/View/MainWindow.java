@@ -1,6 +1,5 @@
 package View;
 
-import Model.Battle;
 import Model.Card;
 import Model.DeckEnum;
 import Model.Field;
@@ -13,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import Control.EndStatus;
 import Control.Game;
 import Control.GameState;
 
@@ -25,7 +25,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
@@ -46,7 +45,6 @@ public class MainWindow extends JFrame {
 	private JScrollPane panelLeftBar;
 	private ImageIcon imgET = new ImageIcon("database/img/ENC_TURNO.png");
 	private ImageIcon imgEP = new ImageIcon("database/img/ENC_PARTIDA.png");
-	int[] lastClickPos;
 	private Game game;
 	private GameState state;
 
@@ -65,25 +63,21 @@ public class MainWindow extends JFrame {
 	}
 	
 	public void showStartScreen(boolean connected) {
-		System.out.println("yubinoklbiluhoil");
 		super.setVisible(false);
 		this.panelStart = new JPanel();
 		ImageIcon backgroung = new ImageIcon("database/img/TITLE.png");
-		panelStart.setLayout(null);
+		this.panelStart.setLayout(null);
 		JLabel background = new JLabel();
-		System.out.println("yubinoklbiluhoil");
 		background.setBounds(0, 0, 769, 408);
 		background.setIcon(backgroung);
-		panelStart.setBackground(Color.BLACK);
-		super.setBounds(super.getX(), super.getY(), 769, 408);;
-		System.out.println("yubinoklbiluhoil");
+		this.panelStart.setBackground(Color.BLACK);
+		super.setBounds(super.getX(), super.getY(), 769, 408);
 		
 		if (!connected) {
-			System.out.println("if");
 			
 			JButton btnConectar = new JButton("Conectar");
 			btnConectar.setBounds(280, 196, 98, 25);
-			panelStart.add(btnConectar);
+			this.panelStart.add(btnConectar);
 			
 			btnConectar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -95,7 +89,7 @@ public class MainWindow extends JFrame {
 			
 			JButton btnSair = new JButton("Sair");
 			btnSair.setBounds(400, 196, 62, 25);
-			panelStart.add(btnSair);
+			this.panelStart.add(btnSair);
 			
 			btnSair.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -104,22 +98,21 @@ public class MainWindow extends JFrame {
 			});
 
 		} else {
-			System.out.println("else");
 			
 			JButton btnIniciar = new JButton("Iniciar");
 			btnIniciar.setBounds(280, 196, 78, 25);
-			panelStart.add(btnIniciar);
+			this.panelStart.add(btnIniciar);
 			
 			btnIniciar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					game.startMatch();;
+					game.startMatch();
 				}
 			});
 			
 
 			JButton btnDesconectar = new JButton("Desconectar");
 			btnDesconectar.setBounds(380, 196, 125, 25);
-			panelStart.add(btnDesconectar);
+			this.panelStart.add(btnDesconectar);
 			
 			btnDesconectar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -129,12 +122,10 @@ public class MainWindow extends JFrame {
 			});
 			
 		}
-		System.out.println("END");
 		
-
-		panelStart.add(background);
-		panelStart.repaint();
-		super.setContentPane(panelStart);
+		this.panelStart.add(background);
+		this.panelStart.repaint();
+		super.setContentPane(this.panelStart);
 		super.setVisible(true);
 		super.repaint();
 		
@@ -144,17 +135,17 @@ public class MainWindow extends JFrame {
 		
 		this.imgH = new ImageIcon[5];
 		for (int k = 0; k < 5; k++) {
-			this.imgH[k] = new ImageIcon("database/img/" + Hid[k] + ".png");
+			this.imgH[k] = new ImageIcon("database/img/" + this.Hid[k] + ".png");
 		}
 		
 		this.imgC1 = new ImageIcon[5];
 		for (int k = 0; k < 5; k++) {
-			this.imgC1[k] = new ImageIcon("database/img/" + C1id[k] + ".png");
+			this.imgC1[k] = new ImageIcon("database/img/" + this.C1id[k] + ".png");
 		}
 		
 		this.imgC2 = new ImageIcon[5];
 		for (int k = 0; k < 5; k++) {
-			this.imgC2[k] = new ImageIcon("database/img/" + C2id[k] + ".png");
+			this.imgC2[k] = new ImageIcon("database/img/" + this.C2id[k] + ".png");
 		}
 		
 	}
@@ -167,17 +158,17 @@ public class MainWindow extends JFrame {
 	private void createCardButtons() {
 		this.btnH = new JButton[5];
 		for (int k = 0; k < 5; k++) {
-			this.btnH[k] = new JButton(new ImageIcon(""));
+			this.btnH[k] = new JButton();
 		}
 		
 		this.btnC1 = new JButton[5];
 		for (int k = 0; k < 5; k++) {
-			this.btnC1[k] = new JButton("");
+			this.btnC1[k] = new JButton();
 		}
 		
 		this.btnC2 = new JButton[5];		
 		for (int k = 0; k < 5; k++) {
-			this.btnC2[k] = new JButton("");
+			this.btnC2[k] = new JButton();
 		}
 		
 	}
@@ -218,15 +209,15 @@ public class MainWindow extends JFrame {
 	private void createListeners() {
 		
 		for (int k = 0; k < 5; k++) {
-			this.createListenerHand(btnH[k], k);
+			this.createListenerHand(this.btnH[k], k);
 		}
 		
 		for (int k = 0; k < 5; k++) {
-			this.createListenerCamp1(btnC1[k], k);
+			this.createListenerCamp1(this.btnC1[k], k);
 		}
 		
 		for (int k = 0; k < 5; k++) {
-			this.createListenerCamp2(btnC2[k], k);
+			this.createListenerCamp2(this.btnC2[k], k);
 		}
 		
 	}
@@ -246,17 +237,17 @@ public class MainWindow extends JFrame {
 		this.battles.setEditable(true);
 		this.battles.setForeground(Color.WHITE);
 		this.battles.setBackground(Color.DARK_GRAY);
-		this.panelLeftBar = new JScrollPane(battles);
+		this.panelLeftBar = new JScrollPane(this.battles);
 		this.panelLeftBar.setPreferredSize(new Dimension(215, 630));
 		this.panelLeftBar.setBackground(Color.BLACK);
-		panelGameWindow.add(this.panelLeftBar, BorderLayout.WEST);
+		this.panelGameWindow.add(this.panelLeftBar, BorderLayout.WEST);
 	}
 	
 	private void constructRightBar() {
 		this.panelRightBar = new JPanel();
 		this.panelRightBar.setBackground(Color.BLACK);
 		this.panelGameWindow.add(this.panelRightBar, BorderLayout.EAST);
-		panelRightBar.setLayout(new GridLayout(3, 1, 0, 0));
+		this.panelRightBar.setLayout(new GridLayout(3, 1, 0, 0));
 		
 		
 		this.txtpnOQueFazer = new JTextPane();
@@ -288,37 +279,39 @@ public class MainWindow extends JFrame {
 	
 	public void draw(Field field) {
 		
-		this.setVisible(false);
+		super.setVisible(false);
 		this.panelGameWindow = new JPanel();
 		this.panelGameWindow.setBackground(Color.BLACK);
 		this.panelGameWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.panelGameWindow.setLayout(new BorderLayout(0, 0));
-		
-		
+			
 		this.constructPanelCards();
-		
 		this.createCardButtons();
-		
 		this.addCardButons();
-		
 		this.createListeners();
-		
 		this.constructTopBar();
-		
 		this.constructRightBar();
-		
 		this.constructLeftBar();
 		
-		
 		this.updateGuiVariables(field);
-		
-		this.repaint();
-		
 		super.setContentPane(this.panelGameWindow);
-		this.setVisible(true);
-		super.repaint();
+		this.repaint();
+		this.panelGameWindow.setBounds(super.getX(), super.getY(), 1105, 665);
+		super.setBounds(super.getX(), super.getY(), 1105, 665);
+		super.setVisible(true);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		super.pack();
 		
+	}
+	
+	public void alertEnemyStarted() {
+		super.setVisible(false);
+		super.setContentPane(new JLabel("  O outro jogador iniciou a partida e está escolhendo o seu deck, aguarde."));
+		super.setVisible(true);
 	}
 	
 	public void repaint() {
@@ -339,6 +332,7 @@ public class MainWindow extends JFrame {
 			this.panelGameWindow.repaint();
 		
 		super.repaint();
+		
 	}
 	
 	public void setState(GameState state) {
@@ -351,12 +345,12 @@ public class MainWindow extends JFrame {
 		String description;
 		switch (this.state) {
 			
-			case INICIANDO_PARTIDA:
+			case STARTING_MATCH:
 				description = "Partida não\n"
 							+ "iniciada.";
 			break;
 			
-			case JG_ESCOLHER_CARTA_MAO:
+			case MOVE_CHOOSING_CARD_ON_HAND:
 				description = "Escolha uma\n"
 						    + "carta da sua\n"
 						    + "mão (3ª linha)\n"
@@ -364,15 +358,15 @@ public class MainWindow extends JFrame {
 						    + "no seu campo.";
 			break;
 			
-			case JG_ESCOLHER_CARTA_CAMPO1:
+			case MOVE_CHOOSING_CARD_ON_1:
 				description = "Escolha uma\n"
 							+ "posição no seu\n"
 							+ "campo (2ª linha)\n"
 							+ "para colocar a\n"
 							+ "carta escolhida.";
 			break;
-//			
-			case AO_ESCOLHER_CARTA_CAMPO1:
+			
+			case ATACK_CHOOSING_CARD_ON_1:
 				description = "Escolha a carta\n"
 							+ "do seu campo\n"
 							+ "(2ª linha) com\n"
@@ -385,7 +379,7 @@ public class MainWindow extends JFrame {
 							+ "passar a vez.";
 			break;
 
-			case  AO_ESCOLHER_CARTA_CAMPO2:
+			case  ATACK_CHOOSING_CARD_ON_2:
 				description = "Escolha a carta\n"
 							+ "do campo inimigo\n"
 							+ "(1ª linha) que\n"
@@ -398,7 +392,7 @@ public class MainWindow extends JFrame {
 							+ "passar a vez.";
 				break;
 
-			case RECEBER_JOGADA:
+			case RECEIVE_MOVE:
 				description = "Aguarde até que\n"
 							+ "o seu oponente\n"
 							+ "termine a sua\n"
@@ -411,32 +405,26 @@ public class MainWindow extends JFrame {
 		}
 		return description;
 	}
-	
-	public DeckEnum getChoosenDeck() {
-		return DeckEnum.MARVEL;
-	}
 
 	private void updateGuiVariables(Field field) {
 		
-		updateCardsId(field);
-		loadImages();
-		updateCardButtons();
-		updateBattles(field);
-		updatePoints();
+		this.updateCardsId(field);
+		this.loadImages();
+		this.updateCardButtons();
+		this.updateLog(field);
+		this.updatePoints();
 		
 	}
 	
-	private void updateBattles(Field field) {
-		String battles = "BATALHAS: \n\n";
+	private void updateLog(Field field) {
 		
-		for (Battle battle : field.getBattles()) {
-			battles += battle.getReport() + "\n\n";
-		}
 		
-		this.battles.setText(battles);
+		this.battles.setText(field.getLog(EndStatus.NOT_FINISHED));
 		
+		this.panelLeftBar.repaint();
 		JScrollBar vertical = this.panelLeftBar.getVerticalScrollBar();
 		vertical.setValue(vertical.getMaximum());
+		this.panelLeftBar.repaint();
 		
 	}
 	
@@ -495,11 +483,11 @@ public class MainWindow extends JFrame {
 		
 		this.updateGuiVariables(field);
 		this.repaint();
+		super.pack();
 		
 	}
 
-		
-	public void createListenerHand(JButton button, final int pos1) {
+	private void createListenerHand(JButton button, final int pos1) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final int[] position = {0, pos1};
@@ -508,7 +496,7 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
-	public void createListenerCamp1(JButton button, final int pos1) {
+	private void createListenerCamp1(JButton button, final int pos1) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final int[] position = {1, pos1};
@@ -517,7 +505,7 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
-	public void createListenerCamp2(JButton button, final int pos1) {
+	private void createListenerCamp2(JButton button, final int pos1) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final int[] position = {2, pos1};
@@ -526,7 +514,7 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
-	public void createListenerEncTurno(JButton button) {
+	private void createListenerEncTurno(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				game.clickEndTurn();
@@ -534,13 +522,27 @@ public class MainWindow extends JFrame {
 		});
 	}
 	
-	public void createListenerEncPartida(JButton button) {
+	private void createListenerEncPartida(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.finalizeMatch(1);
+				game.endMatch(EndStatus.FINISHED_BY_LOCAL_USER);
 			}
 		});
 	}
 
+	public void alert(String text) {
+		JOptionPaneTools.message(text, "Aviso");
+	}
 
+	public DeckEnum chooseDeck() {
+		int chose = JOptionPaneTools.askOption("Escolha seu deck:", new String[] {"Marvel", "DC"});
+		if (chose == 0) {
+			return DeckEnum.MARVEL;
+		} else if (chose == 1) {
+			return DeckEnum.DC;
+		} else {
+			return null;
+		}
+	}
+	
 }

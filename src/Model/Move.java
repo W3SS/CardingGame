@@ -15,6 +15,7 @@ public class Move implements Jogada {
 	protected int points2;
 	
 	
+	// Convert hashmap to array
 	private Card[] serializeMap(Map<Integer, Card> map) {
 		Card[] array = new Card[5];
 		for (int k = 0; k < 5; k++) {
@@ -27,6 +28,7 @@ public class Move implements Jogada {
 		return array;
 	}
 	
+	// Convert array to hashmap
 	private Map<Integer, Card> deserializeMap(Card[] array) {
 		Map<Integer, Card> map = new HashMap<Integer, Card>(); 
 		for (int k = 0; k < 5; k++) {
@@ -38,23 +40,23 @@ public class Move implements Jogada {
 	}
 
 	public Map<Integer, Card> getCardsOn1() {
-		return deserializeMap(this.cardsOn1);
+		return this.deserializeMap(this.cardsOn1);
 	}
 	
 	public void setCardsOn1(Map<Integer, Card> cardsOn1) {
-		this.cardsOn1 = serializeMap(cardsOn1);		
+		this.cardsOn1 = this.serializeMap(cardsOn1);		
 	}
 	
 	public Map<Integer, Card> getCardsOn2() {
-		return deserializeMap(this.cardsOn2);
+		return this.deserializeMap(this.cardsOn2);
 	}
 	
 	public void setCardsOn2(Map<Integer, Card> cardsOn2) {
-		this.cardsOn2 = serializeMap(cardsOn2);	
+		this.cardsOn2 = this.serializeMap(cardsOn2);	
 	}
 	
 	public List<Battle> getBattles() {
-		return battles;
+		return this.battles;
 	}
 	
 	public void setBattles(List<Battle> battles) {
@@ -83,7 +85,5 @@ public class Move implements Jogada {
 		this.points1 = this.points2;
 		this.points2 = tempPoints;
 	}
-
-	
 	
 }

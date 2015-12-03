@@ -4,13 +4,12 @@
 package Model;
 
 import Exception.InvalidPositionException;
-import View.JOptionPaneTools;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import Control.EndStatus;
 
 
 /**
@@ -77,10 +76,10 @@ public class Field {
 	}
 	
 	public void removeCard(Card card) {
-		if (cardsOn1.containsValue(card)) {
-			removeCardFromCollection(card, cardsOn1);
+		if (this.cardsOn1.containsValue(card)) {
+			removeCardFromCollection(card, this.cardsOn1);
 		} else {
-			removeCardFromCollection(card, cardsOn2);
+			removeCardFromCollection(card, this.cardsOn2);
 		}
 	}
 	
@@ -145,8 +144,6 @@ public class Field {
 	
 	public void parseMove(Move move) {
 		
-		int lastBattleBefore = this.battles.size()-1;
-	
 		this.setPoints(move.getPoints());
 		this.cardsOn1 = move.getCardsOn1();
 		this.cardsOn2 = move.getCardsOn2();
@@ -155,9 +152,7 @@ public class Field {
 	}
 	
 	private void setBattles(List<Battle> battles) {
-		// TODO Auto-generated method stub
 		this.battles = battles;
-		
 	}
 
 	public List<Card> getPlayer1Hand() {
@@ -171,8 +166,9 @@ public class Field {
 	public Card getCardOnPosition(int position[]) {
 		if (position[0] == 1) {
 			return cardsOn1.get(position[1]);
+		} else {
+			return cardsOn2.get(position[1]);
 		}
-		return cardsOn2.get(position[1]);
 	}
 
 	public Player getPlayer2() {
@@ -183,8 +179,49 @@ public class Field {
 		this.battles.add(battle);
 	}
 	
+	public boolean isPlayer1HandFull() {
+		return this.getPlayer1Hand().size() >= 5;
+	}
+	
 	public void addCamp2(Card card, int position[]) {
 		this.cardsOn2.put(position[1], card);
 	}
 
+	public String getLog(EndStatus endStatus) {
+		String log = "SEU DECK: " + this.player1.getDeckType() + "\n\n\nBATALHAS:";
+		for (Battle battle : this.battles) {
+			log += "\n\n" + battle.getReport();
+		}
+		switch (endStatus) {
+			case NETGAMES_PROBLEM:
+				log += "\n\n\nPartida encerrada pelo NetGames.";
+			break;
+			case FINISHED_BY_LOCAL_USER:
+				log += "\n\n\nVocê encerrou a partida.";
+			break;
+			case FINISHED_BY_REMOTE_USER:
+				log += "\n\n\nO outro jogador encerrou a partida.";
+			break;
+			case HAND_EMPTY:
+				log += "\n\n\nA mão de um dos jogadores ficou vazia.";
+			break;
+			case POINTS_OVER:
+				log += "\n\n\nUm dos jogadores ficou sem pontos.";
+			break;
+			case NOT_FINISHED:
+			break;
+		}
+		if (endStatus != EndStatus.NOT_FINISHED) {
+			log += "\n\n\nPONTUAÇÃO FINAL:\n\nVocê " + this.player1.getPoints() +
+					"\nInimigo: " + this.player2.getPoints() + "\n\n";
+			if (this.player1.getPoints() > this.player2.getPoints()) {
+				log += "VENCEDOR";
+			} else if (this.player1.getPoints() < this.player2.getPoints()) {
+				log += "PERDEDOR";
+			} else {
+				log += "EMPATE";
+			}
+		}
+		return log;
+	}
 }

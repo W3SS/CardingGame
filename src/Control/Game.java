@@ -7,9 +7,8 @@ import Exception.EmptyDeckException;
 import Exception.FullHandException;
 import Exception.InvalidPositionException;
 import Model.*;
-import View.JOptionPaneTools;
+import View.LogWindow;
 import View.MainWindow;
-//import View.Menu;
 import br.ufsc.inf.leobr.cliente.Jogada;
 import rede.AtorNetGames;
 
@@ -17,24 +16,22 @@ public final class Game {
 
 	private Field field;
 	private MainWindow mainWindow;
-//	private Menu menu;
 	private int lastPositionClick[];
 	private GameState state;
 	private AtorNetGames netGames;
-	private DeckEnum decktype;
 	private boolean isConnected;
 	
 	public static void main(String[] args) {
 		Game game = new Game();
+		game.showStartScreen();
 	}
 	
 	public Game() {
 		this.mainWindow = new MainWindow(this);
 		this.netGames = new AtorNetGames(this);
 		this.lastPositionClick = new int[2];
-		this.state = GameState.INICIANDO_PARTIDA;
+		this.state = GameState.STARTING_MATCH;
 		this.isConnected = false;
-		this.showStartScreen();
 	}
 	
 	public void showStartScreen() {
@@ -52,16 +49,22 @@ public final class Game {
 	
 	
 	public void setNotConnected() {
-		JOptionPaneTools.message("NetGames Desconectado", "");
+		if (!this.isConnected) {
+			this.mainWindow.alert("NetGames Desconectado.");
+		} 
 		this.isConnected = false;
+		if (this.state == GameState.STARTING_MATCH) {
+			this.mainWindow.showStartScreen(this.isConnected);
+		} else {
+			this.endMatch(EndStatus.NETGAMES_PROBLEM);
+		}
 	}
 	
 	public void handClick(int[] position) {
-//		System.out.println(position[1]);
-		if (this.state == GameState.JG_ESCOLHER_CARTA_MAO) {
+		if (this.state == GameState.MOVE_CHOOSING_CARD_ON_HAND) {
 			if (this.field.validHandPosition(position)) {
 				this.lastPositionClick = position;
-				setState(GameState.JG_ESCOLHER_CARTA_CAMPO1);
+				this.setState(GameState.MOVE_CHOOSING_CARD_ON_1);
 			}
 		}
 		
@@ -69,95 +72,95 @@ public final class Game {
 	
 	public void camp1Click(int[] position) {
 		
-		if (this.state == GameState.JG_ESCOLHER_CARTA_CAMPO1) {
+		if (this.state == GameState.MOVE_CHOOSING_CARD_ON_1) {
 			if (this.field.validAddPosition(position)) {
-				setState(GameState.AO_ESCOLHER_CARTA_CAMPO1);
+				this.setState(GameState.ATACK_CHOOSING_CARD_ON_1);
 				this.selectHand(this.lastPositionClick, position);
 			}
 		}
-		else if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO1) {
+		else if (this.state == GameState.ATACK_CHOOSING_CARD_ON_1) {
 			if (this.field.getCardOnPosition(position) != null) {
 				this.lastPositionClick = position;
-				this.setState(GameState.AO_ESCOLHER_CARTA_CAMPO2);
-//				System.out.println("ESCOLHER C1 " + position[1]);
+				this.setState(GameState.ATACK_CHOOSING_CARD_ON_2);
 			}
 		}
 	}
 	
 	public void camp2Click(int[] position) {
 		
-		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2)
+		if (this.state == GameState.ATACK_CHOOSING_CARD_ON_2)
 			if (this.field.getCardOnPosition(position) != null 	) {
-//				System.out.println("ESCOLHER C2 " + position[1]);
-				this.setState(GameState.AO_ESCOLHER_CARTA_CAMPO1);
+				this.setState(GameState.ATACK_CHOOSING_CARD_ON_1);
 				this.attackOpponent(this.lastPositionClick, position);
 			}
 			
 	}
 	
+	public void alert(String text) {
+		this.mainWindow.alert(text);
+	}
+	
 	public void clickEndTurn() {
 		
-		if (this.state == GameState.AO_ESCOLHER_CARTA_CAMPO1 || this.state == GameState.AO_ESCOLHER_CARTA_CAMPO2) {
-			this.setState(GameState.RECEBER_JOGADA);
+		if (this.state == GameState.ATACK_CHOOSING_CARD_ON_1 || this.state == GameState.ATACK_CHOOSING_CARD_ON_2) {
+			this.setState(GameState.RECEIVE_MOVE);
 			this.endTurn();
 		}
 	}
 	
 	public void connect(String host) {
-		Random rand = new Random();
-		String playerId = rand.nextInt()+"";
-		this.isConnected = netGames.conectar(playerId, host);
+		
+		String playerId = new Random().nextInt()+"";
+		this.isConnected = this.netGames.conectar(playerId, host);
 		if (!this.isConnected) {
-			JOptionPaneTools.message("Não foi possível conectar ao servidor", "");
+			this.mainWindow.alert("Não foi possível conectar ao servidor.");
 		}
 		this.mainWindow.showStartScreen(this.isConnected);
 	}
 	
-	public void finalizeMatch(int status) {
-		String message;
-		switch(status) {
-			case 1:
-				message = "A partida foi encerrada por um jogador.";
-				break;
-			default:
-				message = "Partida encerrada.";
-		}
-//		enviar novo tipo de mensagem (encerrar parrtida) via netgames
-		this.endMatch();
-		//this.netGames.finalizarPartidaComErro(message);
-	}
-	
 	public GameState getState() {
-		return state;
+		return this.state;
 	}
 
-	public void endMatch() {
-		//TODO
+	public void endMatch(EndStatus status) {
+		if (this.state == GameState.STARTING_MATCH)
+			return;
+		if (status == EndStatus.FINISHED_BY_LOCAL_USER) {
+			this.netGames.enviarJogada(new EndMessage(EndStatus.FINISHED_BY_REMOTE_USER));
+		} 
 		this.mainWindow.setVisible(false);
-		this.mainWindow = new MainWindow(this);
-		this.mainWindow.showStartScreen(this.isConnected);;
+		this.setState(GameState.STARTING_MATCH);
+		this.mainWindow.showStartScreen(this.isConnected);
+		new LogWindow(this.field.getLog(status));
 	}
 	
 	public void startMatch() {
-//		this.startMessage = new StartMessage(this.whoStart);
-		netGames.iniciarPartida();
-//		netGames.enviarJogada(startMessage);
-		
+		netGames.iniciarPartida();		
 	}
 	
 	public void startNewMatch(int order) {
 		if (order == 1) {
-			this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
-			this.decktype = DeckEnum.DC;
+			DeckEnum deckType = null;
+			while (deckType == null) {
+				deckType = mainWindow.chooseDeck();
+			}
+			StartMessage startMessage = new StartMessage();
+			startMessage.setSelectedDeck(deckType);
+			netGames.enviarJogada(startMessage);
+			this.setState(GameState.MOVE_CHOOSING_CARD_ON_HAND);
+			this.beginMatch(deckType);
 		} else {
-			this.setState(GameState.RECEBER_JOGADA);
-			this.decktype = DeckEnum.MARVEL;
+			this.mainWindow.alertEnemyStarted();			
 		}
+
 		
+	}
+
+	private void beginMatch(DeckEnum deckType) {
 		CardShop cardShop = new CardShop();
-		List<Card> deck = cardShop.getDeck(this.decktype);
+		List<Card> deck = cardShop.getDeck(deckType);
 		
-		Player player1 = new Player(this.decktype, deck);
+		Player player1 = new Player(deckType, deck);
 		Player player2 = new Player(null, null);
 		this.field = new Field(player1, player2);
 
@@ -168,19 +171,11 @@ public final class Game {
 				player1.addHandCard(player1.getDeck().get(indexRand));
 				player1.removeFromDeck(player1.getDeck().get(indexRand));
 			} catch (FullHandException e) {
-				//fazer um joptionpane para avisar mão cheia
 				e.printStackTrace();
 			}
 		}
-		for (Card card : player1.getDeck() ) {
-			System.out.println(card.getName());
-			System.out.println(card.getId());
-		}
-		
-		mainWindow.draw(this.field);
-		
+		this.mainWindow.draw(this.field);
 	}
-
 
 	public void selectHand(int[] positionHand, int[] positionField) {
 		
@@ -190,11 +185,10 @@ public final class Game {
 			this.field.addCard(selectedCard, positionField);
 			this.field.getPlayer1().removeFromHand(selectedCard);
 		} catch (InvalidPositionException e) {
-			// fazer um joptionpane para avisar posiçao invalida
 			e.printStackTrace();
 		}
 		
-		mainWindow.showNewField(this.field);
+		this.mainWindow.showNewField(this.field);
 	}
 
 
@@ -202,7 +196,10 @@ public final class Game {
 
 	public void attackOpponent(int[] positionCamp1, int[] positionCamp2) {
 		
-		Battle battle = new Battle(this.field.getCardOnPosition(positionCamp1), this.field.getCardOnPosition(positionCamp2));
+		Card card1 = this.field.getCardOnPosition(positionCamp1);
+		Card card2 = this.field.getCardOnPosition(positionCamp2);
+		
+		Battle battle = new Battle(card1, card2);
 		Card loserCard = battle.getLoser();
 		this.field.removeCard(loserCard);
 		Player loser = this.getCardOwner(loserCard);
@@ -213,67 +210,80 @@ public final class Game {
 			this.field.removeCard(winnerCard);
 		}
 		this.field.addBattle(battle);
-		mainWindow.showNewField(this.field);
+		this.mainWindow.showNewField(this.field);
 		
 	}
 	
 	public void endTurn() {
-		// TODO Auto-generated method stub
-		System.out.println("ENVIANDO");
 		Move move = new Move();
 		move.setBattles(this.field.getBattles());
 		move.setCardsOn1(this.field.getCardsOn1());
 		move.setCardsOn2(this.field.getCardsOn2());
 		move.setPoints(this.field.getPoints());
 		this.netGames.enviarJogada(move);
-		System.out.println("ENVIADO");
+		this.checkPoints(this.field.getPoints());
 	}
 	
 	private void checkPoints(int[] points) {
-		if (points[0] <=0 || points[1] <=0)
-			this.endMatch();
+		if (points[0] <=0 || points[1] <=0) {
+			this.netGames.enviarJogada(new EndMessage(EndStatus.POINTS_OVER));
+		}
 	}
 	
 	public void receiveMove(Jogada jogada) {
-		System.out.println("RECEBEU");
-		if (this.state == GameState.RECEBER_JOGADA) {
+		if (this.state == GameState.STARTING_MATCH) {
+			if (jogada instanceof StartMessage) {
+				StartMessage message = (StartMessage) jogada;
+				DeckEnum deckType;
+				if (message.getSelectedDeck() == DeckEnum.DC) {
+					deckType = DeckEnum.MARVEL;
+				} else {
+					deckType = DeckEnum.DC;
+				}
+				this.setState(GameState.RECEIVE_MOVE);
+				this.beginMatch(deckType);
+			}
+		}
+		else if (this.state == GameState.RECEIVE_MOVE) {
 			if (jogada instanceof Move) {
 				Move move = (Move) jogada;
 				move.invertData();
 				this.field.parseMove(move);
-				checkPoints(this.field.getPoints());
-				this.setState(GameState.JG_ESCOLHER_CARTA_MAO);
-				System.out.println(this.field.getPlayer1Hand().size());
-				if (this.field.getPlayer1Hand().size() < 5) {
-					System.out.println("HUE\nassas");
+				this.checkPoints(this.field.getPoints());
+				this.setState(GameState.MOVE_CHOOSING_CARD_ON_HAND);
+				if (!this.field.isPlayer1HandFull()) {
 					try {
-//						System.out.println(this.field.getPlayer1().popDeck().getName());
-						this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());
-						
+						this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());						
 					} catch (FullHandException e) {
+						e.printStackTrace();
 					} catch (EmptyDeckException e) {
 						if (this.field.getPlayer1Hand().isEmpty()) {
-							this.endMatch();
+							this.endMatch(EndStatus.HAND_EMPTY);
+							this.netGames.enviarJogada(new EndMessage(EndStatus.HAND_EMPTY));
 						}
 					} 
 				}
-				System.out.println("BABA");
 				this.mainWindow.showNewField(this.field);
 			}
 		}
-		System.out.println("PROCESSOU RECEBIDO");
+		if (jogada instanceof EndMessage) {
+			if (this.state != GameState.STARTING_MATCH) {
+				EndMessage message = (EndMessage) jogada; 
+				this.endMatch(message.getStatus());
+			}
+		}
 	}
 
-	public Player getCardOwner(Card card) {
+	private Player getCardOwner(Card card) {
 		
 		Player player1 = this.field.getPlayer1();
-		Player loser;
+		Player owner;
 		if (card.getDeckType() == player1.getDeckType()) {
-			loser = player1;
+			owner = player1;
 		} else {
-			loser = this.field.getPlayer2();
+			owner = this.field.getPlayer2();
 		}
-		return loser;
+		return owner;
 	}
 	
 }

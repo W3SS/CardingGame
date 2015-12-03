@@ -14,15 +14,11 @@ public class Battle implements Serializable {
 	public Battle(Card card1, Card card2) {
 		
 		if (card1.getAttack() > card2.getDefense()) {
-		
 			this.winner = card1;
 			this.loser = card2;
-		
 		} else {
-
 			this.winner = card2;
 			this.loser = card1;
-			
 		}
 		
 		this.damage = Math.abs(card1.getAttack() - card2.getDefense());
@@ -39,27 +35,19 @@ public class Battle implements Serializable {
 	}
 	
 	public Card getWinner() {
-		
 		return this.winner;
-		
 	}
 	
 	public Card getLoser() {
-		
 		return this.loser;
-		
 	}
 
 	public String getReport() {
-		
 		return this.report;
-		
 	}
 	
 	public int getDamage() {
-		
 		return this.damage;
-		
 	}
 
 }

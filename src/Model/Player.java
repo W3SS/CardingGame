@@ -9,7 +9,7 @@ import Exception.FullHandException;
 
 public class Player {
 	
-	private static final int STARTPOINTS = 35;
+	private static final int STARTPOINTS = 50;
 	
 	private int points;
 	private List<Card> deck;
@@ -29,7 +29,7 @@ public class Player {
 	}
 	
 	public List<Card> getDeck() {
-		return deck;
+		return this.deck;
 	}
 
 	public List<Card> getHandCards() {
@@ -74,6 +74,5 @@ public class Player {
 	public DeckEnum getDeckType() {
 		return this.deckType;
 	}
-
 	
 }
