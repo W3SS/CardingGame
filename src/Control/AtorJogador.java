@@ -25,6 +25,8 @@ public class AtorJogador {
 	}
 	
 	public void connect(String host) {
+		if (host == null)
+			host = "0";
 		game.connect(host);
 	}
 	
