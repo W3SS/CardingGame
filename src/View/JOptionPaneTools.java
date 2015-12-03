@@ -14,7 +14,7 @@ public final class JOptionPaneTools extends JOptionPane {
 	
 	public static int askOption(String text, String[] options){
 		return showOptionDialog(null, text, "Marvel vs. DC", 
-	        1, PLAIN_MESSAGE, null, options, null);
+	        1, QUESTION_MESSAGE, null, options, null);
 	
 	}
 	

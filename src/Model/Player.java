@@ -9,7 +9,7 @@ import Exception.FullHandException;
 
 public class Player {
 	
-	private static final int STARTPOINTS = 50;
+	private static final int STARTPOINTS = 40;
 	
 	private int points;
 	private List<Card> deck;

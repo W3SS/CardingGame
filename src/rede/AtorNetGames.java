@@ -76,7 +76,7 @@ public class AtorNetGames implements OuvidorProxy{
 
     @Override
     public void finalizarPartidaComErro(String message) {
-//    	game.alert(message);
+    	game.alert(message);
     	game.endMatch(EndStatus.NETGAMES_PROBLEM);
     }
 
@@ -92,13 +92,13 @@ public class AtorNetGames implements OuvidorProxy{
 
     @Override
     public void tratarConexaoPerdida() {
-    	game.alert("Conexão perdida");
-       game.setNotConnected();
+    	game.alert("NetGames desconectado.");
+    	game.setNotConnected();
     }
 
     @Override
     public void tratarPartidaNaoIniciada(String message) {
-        //game.exibeMensagem(message);
+        game.alert(message);
     }
     
 }

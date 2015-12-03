@@ -19,6 +19,7 @@ public final class Game {
 	private int lastPositionClick[];
 	private GameState state;
 	private AtorNetGames netGames;
+	private AtorJogador jogador;
 	private boolean isConnected;
 	
 	public static void main(String[] args) {
@@ -27,8 +28,9 @@ public final class Game {
 	}
 	
 	public Game() {
-		this.mainWindow = new MainWindow(this);
+		this.jogador = new AtorJogador(this);
 		this.netGames = new AtorNetGames(this);
+		this.mainWindow = new MainWindow(this, jogador);
 		this.lastPositionClick = new int[2];
 		this.state = GameState.STARTING_MATCH;
 		this.isConnected = false;
@@ -49,9 +51,6 @@ public final class Game {
 	
 	
 	public void setNotConnected() {
-		if (!this.isConnected) {
-			this.mainWindow.alert("NetGames Desconectado.");
-		} 
 		this.isConnected = false;
 		if (this.state == GameState.STARTING_MATCH) {
 			this.mainWindow.showStartScreen(this.isConnected);
@@ -61,10 +60,10 @@ public final class Game {
 	}
 	
 	public void handClick(int[] position) {
-		if (this.state == GameState.MOVE_CHOOSING_CARD_ON_HAND) {
+		if (this.state == GameState.SELECT_HAND_CHOOSING_CARD_ON_HAND) {
 			if (this.field.validHandPosition(position)) {
 				this.lastPositionClick = position;
-				this.setState(GameState.MOVE_CHOOSING_CARD_ON_1);
+				this.setState(GameState.SELECT_HAND_CHOOSING_CARD_ON_1);
 			}
 		}
 		
@@ -72,10 +71,10 @@ public final class Game {
 	
 	public void camp1Click(int[] position) {
 		
-		if (this.state == GameState.MOVE_CHOOSING_CARD_ON_1) {
+		if (this.state == GameState.SELECT_HAND_CHOOSING_CARD_ON_1) {
 			if (this.field.validAddPosition(position)) {
 				this.setState(GameState.ATACK_CHOOSING_CARD_ON_1);
-				this.selectHand(this.lastPositionClick, position);
+				jogador.selectHand(this.lastPositionClick, position);
 			}
 		}
 		else if (this.state == GameState.ATACK_CHOOSING_CARD_ON_1) {
@@ -104,7 +103,7 @@ public final class Game {
 		
 		if (this.state == GameState.ATACK_CHOOSING_CARD_ON_1 || this.state == GameState.ATACK_CHOOSING_CARD_ON_2) {
 			this.setState(GameState.RECEIVE_MOVE);
-			this.endTurn();
+			jogador.endTurn();
 		}
 	}
 	
@@ -129,6 +128,7 @@ public final class Game {
 			this.netGames.enviarJogada(new EndMessage(EndStatus.FINISHED_BY_REMOTE_USER));
 		} 
 		this.mainWindow.setVisible(false);
+		this.mainWindow = new MainWindow(this, jogador);
 		this.setState(GameState.STARTING_MATCH);
 		this.mainWindow.showStartScreen(this.isConnected);
 		new LogWindow(this.field.getLog(status));
@@ -147,7 +147,7 @@ public final class Game {
 			StartMessage startMessage = new StartMessage();
 			startMessage.setSelectedDeck(deckType);
 			netGames.enviarJogada(startMessage);
-			this.setState(GameState.MOVE_CHOOSING_CARD_ON_HAND);
+			this.setState(GameState.SELECT_HAND_CHOOSING_CARD_ON_HAND);
 			this.beginMatch(deckType);
 		} else {
 			this.mainWindow.alertEnemyStarted();			
@@ -191,8 +191,9 @@ public final class Game {
 		this.mainWindow.showNewField(this.field);
 	}
 
-
-
+	public void exit() {
+		System.exit(0);
+	}
 
 	public void attackOpponent(int[] positionCamp1, int[] positionCamp2) {
 		
@@ -250,7 +251,7 @@ public final class Game {
 				move.invertData();
 				this.field.parseMove(move);
 				this.checkPoints(this.field.getPoints());
-				this.setState(GameState.MOVE_CHOOSING_CARD_ON_HAND);
+				this.setState(GameState.SELECT_HAND_CHOOSING_CARD_ON_HAND);
 				if (!this.field.isPlayer1HandFull()) {
 					try {
 						this.field.getPlayer1().addHandCard(this.field.getPlayer1().popDeck());						

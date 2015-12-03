@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import Control.AtorJogador;
 import Control.EndStatus;
 import Control.Game;
 import Control.GameState;
@@ -32,6 +33,7 @@ import javax.swing.JTextPane;
 
 public class MainWindow extends JFrame {
 
+	private AtorJogador jogador;
 	private String[] Hid = new String[5];
 	private String[] C1id = new String[5];
 	private String[] C2id = new String[5];
@@ -49,11 +51,12 @@ public class MainWindow extends JFrame {
 	private GameState state;
 
 	
-	public MainWindow(final Game game) {
+	public MainWindow(final Game game, AtorJogador jogador) {
 	
+		this.game = game;
+		this.jogador = jogador;
 		super.setResizable(false);
 		super.setVisible(true);
-		this.game = game;
 		super.setTitle("Marvel vs. DC");		
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		super.setBounds(100, 10, 200, 200);
@@ -82,7 +85,7 @@ public class MainWindow extends JFrame {
 			btnConectar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String host = JOptionPaneTools.askString("Insira o host do servidor:", "localhost");
-					game.connect(host);
+					jogador.connect(host);
 				}
 			});
 			
@@ -93,7 +96,7 @@ public class MainWindow extends JFrame {
 			
 			btnSair.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
+					jogador.exit();
 				}
 			});
 
@@ -105,7 +108,7 @@ public class MainWindow extends JFrame {
 			
 			btnIniciar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					game.startMatch();
+					jogador.startMatch();
 				}
 			});
 			
@@ -116,8 +119,7 @@ public class MainWindow extends JFrame {
 			
 			btnDesconectar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					game.disconnect();
-					game.showStartScreen();
+					jogador.disconnect();
 				}
 			});
 			
@@ -350,7 +352,7 @@ public class MainWindow extends JFrame {
 							+ "iniciada.";
 			break;
 			
-			case MOVE_CHOOSING_CARD_ON_HAND:
+			case SELECT_HAND_CHOOSING_CARD_ON_HAND:
 				description = "Escolha uma\n"
 						    + "carta da sua\n"
 						    + "mão (3ª linha)\n"
@@ -358,7 +360,7 @@ public class MainWindow extends JFrame {
 						    + "no seu campo.";
 			break;
 			
-			case MOVE_CHOOSING_CARD_ON_1:
+			case SELECT_HAND_CHOOSING_CARD_ON_1:
 				description = "Escolha uma\n"
 							+ "posição no seu\n"
 							+ "campo (2ª linha)\n"
@@ -517,7 +519,7 @@ public class MainWindow extends JFrame {
 	private void createListenerEncTurno(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.clickEndTurn();
+				jogador.clickEndTurn();
 			}
 		});
 	}
@@ -525,7 +527,7 @@ public class MainWindow extends JFrame {
 	private void createListenerEncPartida(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				game.endMatch(EndStatus.FINISHED_BY_LOCAL_USER);
+				jogador.endMatch();
 			}
 		});
 	}
