@@ -271,6 +271,7 @@ public final class Game {
 			if (this.state != GameState.STARTING_MATCH) {
 				EndMessage message = (EndMessage) jogada; 
 				this.endMatch(message.getStatus());
+				this.netGames.encerrarPartida();
 			}
 		}
 	}

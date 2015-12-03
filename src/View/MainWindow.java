@@ -527,7 +527,7 @@ public class MainWindow extends JFrame {
 	private void createListenerEncPartida(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jogador.endMatch();
+				askEndMatch();
 			}
 		});
 	}
@@ -544,6 +544,13 @@ public class MainWindow extends JFrame {
 			return DeckEnum.DC;
 		} else {
 			return null;
+		}
+	}
+	
+	private void askEndMatch() {
+		int chose = JOptionPaneTools.askOption("Você quer mesmo encerrar a partida?", new String[] {"Não", "Sim"});
+		if (chose == 1) {
+			this.jogador.endMatch();
 		}
 	}
 	
