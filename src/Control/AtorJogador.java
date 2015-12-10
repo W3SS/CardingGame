@@ -39,11 +39,8 @@ public class AtorJogador {
 		game.showStartScreen();
 	}
 	
-	public void clickEndTurn() {
-		game.clickEndTurn();
-	}
-	
 	public void endMatch() {
+		game.endTurn();
 		game.endMatch(EndStatus.FINISHED_BY_LOCAL_USER);
 	}
 	

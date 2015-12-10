@@ -84,7 +84,7 @@ public class MainWindow extends JFrame {
 			
 			btnConectar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					String host = JOptionPaneTools.askString("Insira o host do servidor:", "localhost");
+					String host = JOptionPaneTools.askString("Insira o host do servidor:", "venus.inf.ufsc.br");
 					jogador.connect(host);
 				}
 			});
@@ -519,7 +519,7 @@ public class MainWindow extends JFrame {
 	private void createListenerEncTurno(JButton button) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jogador.clickEndTurn();
+				game.clickEndTurn();
 			}
 		});
 	}
